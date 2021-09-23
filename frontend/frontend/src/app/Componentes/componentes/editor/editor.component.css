@@ -1,0 +1,73 @@
+.header{
+    max-width: 100%;
+    height: 150px;
+    background-color:lightslategrey;
+    text-align: center;
+}
+
+.titulo{
+    color:darkviolet;
+}
+
+.titulo2{
+    color: black;
+    margin-top: 25px;
+    margin-left: 25px;
+}
+
+.navegacion{
+    max-width: 100%;
+    height: 55px;
+    background-color:cadetblue;
+    
+}
+
+.boton{
+    width: 200px;
+    height: 50px;
+    margin: 2px;
+}
+.boton-foot{
+    width: 200px;
+    height: 50px;
+    margin: 10px;
+    margin-top: 25px;
+}
+.body-app{
+    height: 650px;
+    background-color:lightslategrey;
+}
+.footer-app{
+    height: 101px;
+    width: 100%;
+    background-color: cadetblue;
+    text-align: center;
+}
+
+.contenedor{
+    width: 100%;
+    height: 100%;
+    align-content:flex-start;
+}
+
+.cuerpo{
+    border-style: solid;
+    border: black, 2px;
+    margin-left: 5px;
+    height: 85%;
+    width: 95%;
+}
+
+
+
+
+
+.editor{
+    height: 505px;
+    width: 100%;
+}
+
+.myeditor{
+    height: 100%;
+    width: 100%;
+}

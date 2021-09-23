@@ -1,0 +1,48 @@
+<div class="header">
+    <h1 class="titulo">PROYECTO 2 ORGANIZACIÓN DE LENGUAJES Y COMPILADORES 1</h1>
+    <h2 class="titulo"><b>CARLOS JAVIER MARTINEZ POLANCO 201709282</b></h2>
+    <nav class="navegacion">
+        <input style="display:none;" accept=".sc" type="file" (change)="CapturarArchivo($event, Tabulador.selectedIndex)" #archivo>
+        <button class="boton" mat-raised-button color="primary" (click)=AbrirArchivo(archivo)>Abrir</button>
+        <button class="boton" mat-raised-button color="accent" (click)="GuardarArchivo(Tabulador.selectedIndex)">Guardar</button>
+        <button class="boton" mat-raised-button color="primary" (click)="AgregarVentana()">Nueva Ventana</button>
+        <button class="boton" mat-raised-button color="accent" (click)="CerrarVentana(Tabulador.selectedIndex)">Cerrar Ventana</button>
+        <button class="boton" mat-raised-button color="primary" (click)="Compilar(Tabulador.selectedIndex)">Compilar</button>
+    </nav>
+</div>
+<div class="body-app">
+    <mat-grid-list cols="5" rowHeight="100%">
+        <mat-grid-tile [colspan]="3">
+            <div class="contenedor">
+                <div>
+                    <h1 class="titulo2"><b>EDITOR</b></h1>
+                </div>
+                <div class="cuerpo">
+                    <mat-tab-group backgroundColor="accent" #Tabulador>
+                        <mat-tab *ngFor="let tab of tabs; let i = index" [label]="tab.nombre">
+                            <div class="editor">
+                                <ngx-monaco-editor class="myeditor" (init)="editorInit($event)" [options]="editorOptions" [(ngModel)]="tab.code"></ngx-monaco-editor>
+                            </div>
+                        </mat-tab>
+                    </mat-tab-group>
+                </div>
+            </div>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="2">
+            <div class="contenedor">
+                <div>
+                    <h1 class="titulo2"><b>CONSOLA</b></h1>
+                </div>
+                <div class="cuerpo">
+                    <ngx-monaco-editor [options]="consoleOptions" [(ngModel)]="console"></ngx-monaco-editor>
+                </div>
+            </div>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>
+<div class="footer-app">
+    <button class="boton-foot" mat-raised-button color="primary">Reporte AST</button>
+    <button class="boton-foot" mat-raised-button color="primary">Gramaticas</button>
+    <button class="boton-foot" mat-raised-button color="primary">Ver Tabla De Simbolos</button>
+    <button class="boton-foot" mat-raised-button color="primary">Ver Tabla De Errores</button>
+</div>
