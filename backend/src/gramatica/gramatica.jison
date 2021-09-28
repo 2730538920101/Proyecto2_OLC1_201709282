@@ -9,19 +9,22 @@
 %lex
 %options case-insensitive
 
-char                [\'][^\'\n][\']
+char                [\']([\\].|[^\'\n])[\']
 int                 [0-9]+
 boolean             'true'|'false'
 double              {int}'.'{int}  
-string              [\"]([\\][\"]|[^\"])*[\"]
+string              [\"]([\\][\"]|[^\"])*[\"]ß
 letra               [a-zA-ZÑñ]+
 id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 
 
 %%
 //definir tokens
-\s+                   /* skip whitespace */
+\s+                                         /* skip whitespace */
 
+//COMENTARIOS
+"//".*	                                    // comentario simple línea
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]			// comentario multiple líneas
 //PALABRAS RESERVADAS
 
 //ESTRUCTURAS DE DATOS
@@ -115,6 +118,8 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 "["                     return '['
 "]"                     return ']'
 
+     
+
 //VALORES-TIPO DE DATO
 {char}                  return 'char'
 {double}                return 'double'
@@ -132,12 +137,12 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 %nonassoc       'ˆ'
 %left           '/','*'
 %left           '+','-'
-%left           '++','--'
 %left           '==','!=','<','<=','>','>='
 %right          '!'
 %left           '&&'
 %left           '||'
 %left           '%'
+%nonassoc       '++','--'
 %left           '?', ':'
 
 
@@ -158,8 +163,14 @@ INICIO
     }
     ;
 
-//ENTORNO GLOBAL QUE EJECUTARA EL PROGRAMA
+//LISTA DE INSTRUCCIONES EN EL ENTORNO GLOBAL QUE EJECUTARA EL PROGRAMA
 ENTORNO_GLOBAL
+    :ENTORNO_GLOBAL GLOBAL
+    |GLOBAL
+    ;
+
+//INSTRUCCIONES GLOBALES
+GLOBAL    
     :DECLARACION_VARIABLE
     |DECLARACION_FUNCIONES
     |INICIAR_SISTEMA
@@ -203,19 +214,19 @@ INSTRUCCIONES
 
 //INSTRUCCIONES QUE INGRESARAN EN UNA LISTA
 INSTRUCCION
-    :DECLARACION_VARIABLE ';'
-    |ASIG_LIST ';'
+    :DECLARACION_VARIABLE 
+    |ASIGNACION ';'
     |FUNCIONES_CALL ';'
     |SENTENCIAS
-    |TRANSFERENCIA
+    |TRANSFERENCIA ';'
     ;
 
 //SENTENCIAS DE TRANSFERENCIA
 TRANSFERENCIA   
-    :'break' ';'
-    |'return' EXPRESION ';'
-    |'return' ';'
-    |'continue' ';'
+    :'break' 
+    |'return' EXPRESION 
+    |'return' 
+    |'continue' 
     ;
 
 //SENTENCIAS (CICLOS Y CONDICIONES) A UTILIZAR EN EL LENGUAJE
@@ -230,8 +241,8 @@ SENTENCIAS
 //SENTENCIA PARA EL CICLO IF Y TODAS SUS VARIANTES
 GENERARIF
     :'if' '(' EXPRESION ')' ENTORNO
-    | 'if' '(' EXPRESION ')' ENTORNO GENERARELSE
-    | 'if' '(' EXPRESION ')' ENTORNO GENERARELSEIF
+    |'if' '(' EXPRESION ')' ENTORNO GENERARELSE
+    |'if' '(' EXPRESION ')' ENTORNO GENERARELSEIF
     ;
 
 //SENTENCIA PARA ELSE
@@ -267,7 +278,7 @@ GENERARWHILE
 
 //SENTENCIA PARA FOR
 GENERARFOR
-    :'for' '(' DECLARACION_VARIABLE ';' EXPRESION ';' ASIGNACION ')' ENTORNO
+    :'for' '(' DECLARACION_VARIABLE EXPRESION ';' ASIGNACION ')' ENTORNO
     |'for' '(' ASIGNACION ';' EXPRESION ';' ASIGNACION ')' ENTORNO
     ;
 
@@ -308,45 +319,46 @@ FUNCIONES_NATIVAS
     :'append' '(' id ',' EXPRESION ')'
     |'getValue' '(' id ',' EXPRESION ')'
     |'setValue' '(' id ',' EXPRESION ',' EXPRESION ')'
-    |'WriteLine' '(' id ',' EXPRESION ')'
-    |'toLower' '(' id ',' EXPRESION ')'
-    |'toUpper' '(' id ',' EXPRESION ')'
-    |'length' '(' VALORES ')' ';'
-    |'truncate' '(' VALORES ')' ';'
-    |'round' '(' VALORES ')' ';'
-    |'typeof' '(' VALORES ')' ';'
-    |'tostring' '(' VALORES ')' ';'
-    |'toCharArray' '(' VALORES ')' ';'
+    |'WriteLine' '(' EXPRESION ')'
+    |'WriteLine' '(' FUNCIONES_CALL ')'
+    |'toLower' '(' id ',' EXPRESION ')' 
+    |'toUpper' '(' id ',' EXPRESION ')' 
+    |'length' '(' VALORES ')' 
+    |'truncate' '(' VALORES ')' 
+    |'round' '(' VALORES ')' 
+    |'typeof' '(' VALORES ')' 
+    |'tostring' '(' VALORES ')' 
+    |'toCharArray' '(' VALORES ')' 
     ;
 
 
 //DECLARACION DE VARIABLE
 DECLARACION_VARIABLE
-    :TIPO_DATO ASIG_LIST 
-    |'lista_dinamica' '<' TIPO_DATO '>' ASIG_LIST 
+    :TIPO_DATO ASIGNACION ';'
+    |'lista_dinamica' '<' TIPO_DATO '>' ASIGNACION ';'
     ;
 
 //LISTA DE VARIABLES
-ASIG_LIST
-    :ASIG_LIST ',' ASIGNACION
-    |ASIGNACION
+ID_LIST
+    :ID_LIST ',' 'id'
+    |'id'
     ;
 
 //ASIGNACION DE VARIABLES
 ASIGNACION
-    :'id' '=' EXPRESION
-    |'id' '=' CASTING
-    |'id' '=' FUNCIONES_CALL
-    |'id' '[' ']'
-    |'id' '=' 'new' 'lista_dinamica' '<' TIPO_DATO '>'
-    |'id' '[' ']' '=' 'new' TIPO_DATO '[' EXPRESION ']'
-    |'id' '[' ']' '=' '{' VALORES_LIST '}'
-    |'id' '[' ']' '=' FUNCIONES_CALL
-    |'id' '[' EXPRESION ']' '=' EXPRESION
-    |'id' '[' EXPRESION ']' '=' FUNCIONES_CALL
+    :ID_LIST '=' EXPRESION
+    |ID_LIST '=' CASTING
+    |ID_LIST '=' FUNCIONES_CALL
+    |ID_LIST '[' ']'
+    |ID_LIST '=' 'new' 'lista_dinamica' '<' TIPO_DATO '>'
+    |ID_LIST '[' ']' '=' 'new' TIPO_DATO '[' EXPRESION ']'
+    |ID_LIST '[' ']' '=' '{' VALORES_LIST '}'
+    |ID_LIST '[' ']' '=' FUNCIONES_CALL
+    |ID_LIST '[' EXPRESION ']' '=' EXPRESION
+    |ID_LIST '[' EXPRESION ']' '=' FUNCIONES_CALL
     |'id' '++'
     |'id' '--'
-    |'id'
+    |ID_LIST
     ;
 
 
