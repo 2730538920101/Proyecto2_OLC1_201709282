@@ -1,7 +1,6 @@
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { filter,take } from 'rxjs/operators';
 import{
-  MonacoEditorComponent,
   MonacoEditorConstructionOptions,
   MonacoEditorLoaderService,
   MonacoStandaloneCodeEditor
@@ -60,6 +59,7 @@ export class EditorComponent implements OnInit {
   AgregarVentana(){
     this.contador++;
     this.ventana.nombre = "VENTANA" + this.contador;
+    this.console = this.console + 'SE HA CREADO UNA NUEVA VENTANA\n';
     this.tabs.push(this.ventana);
     this.ventana = {
       nombre: "",
@@ -69,9 +69,8 @@ export class EditorComponent implements OnInit {
 
   CerrarVentana(index:any){
     this.tabs.splice(index, 1);
+    this.console = this.console + 'SE HA CERRADO UNA VENTANA \n';
   }
-  @ViewChild(MonacoEditorComponent, { static: false })
-  monacoComponent: MonacoEditorComponent = new MonacoEditorComponent(this.monacoLoaderService);
   editorOptions: MonacoEditorConstructionOptions = {
     theme: 'vs-dark',
     language: 'js',
@@ -90,7 +89,6 @@ export class EditorComponent implements OnInit {
  
 
   editorInit(editor: MonacoStandaloneCodeEditor) {
-    // monaco.editor.setTheme('vs');
     editor.setSelection({
       startLineNumber: 1,
       startColumn: 1,
@@ -104,22 +102,22 @@ export class EditorComponent implements OnInit {
       let a =evento.target.files[0]
       let text=""
       if(a){
-        let reader=new FileReader()
+          let reader=new FileReader()
           reader.onload=ev=>{
           const resultado=ev.target?.result
           text=String(resultado)
           this.tabs[index].code=text.toString();
-          this.console = "SE HA AÑADIDO EL CONTENIDO A " + this.tabs[index].nombre + ": DEL ARCHIVO: " + a.name;
+          this.console = this.console+"SE HA AÑADIDO EL CONTENIDO A " + this.tabs[index].nombre + ": DEL ARCHIVO: " + a.name +"\n";
         }
         reader.readAsText(a)
       }
     } catch (error) {
-      this.console = "NO HA AÑADIDO NINGUNA VENTANA";
+      this.console = this.console+"NO HA AÑADIDO NINGUNA VENTANA\n";
     }
   }
   AbrirArchivo(archivo:HTMLInputElement){
     if(this.tabs.length == 0){
-      this.console ="NO HA AÑADIDO NINGUNA VENTANA";
+      this.console ="NO HA AÑADIDO NINGUNA VENTANA\n";
     }else{
       archivo.click();
     }
@@ -127,18 +125,17 @@ export class EditorComponent implements OnInit {
 
   GuardarArchivo(index:any){
     try {
-      this.console = "";
       let nombre = this.tabs[index].nombre + ".sc";
       let content = this.tabs[index].code;
       let type = "text/plain";
       if(this.tabs[index].code != ""){
         this.DescargarArchivo(content, nombre, type);
-        this.console = "SE HA GUARDADO EL ARCHIVO: " + nombre;
+        this.console = this.console + "SE HA GUARDADO EL ARCHIVO: " + nombre + "\n";
       }else{
-        this.console = "EL ARCHIVO QUE DESEA GUARDAR ESTA VACIO";
+        this.console = this.console + "EL ARCHIVO QUE DESEA GUARDAR ESTA VACIO\n";
       }  
     } catch (error) {
-      this.console = "NO HA AÑADIDO NINGUNA VENTANA";
+      this.console = this.console + "NO HA AÑADIDO NINGUNA VENTANA\n";
     }
     
   }
@@ -156,4 +153,5 @@ export class EditorComponent implements OnInit {
     this.servicio.post('http://localhost:3000/backend/analizar' ,this.tabs[index]).subscribe(ventana => console.log(ventana));
   }
  
+
 }
