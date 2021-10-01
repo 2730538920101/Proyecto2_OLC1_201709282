@@ -1,6 +1,5 @@
 //CODIGO JS
 %{
-
     console.log("SE COMPILO EL ARCHIVO .JISON");
 %}
 
@@ -144,7 +143,7 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 %left           '%'
 %nonassoc       '++','--'
 %left           '?', ':'
-
+%nonassoc       '(' , ')'
 
 
 
@@ -160,20 +159,32 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 INICIO
     :ENTORNO_GLOBAL EOF {
         console.log('ANALISIS EXITOSO');
+        return $1;
     }
     ;
 
 //LISTA DE INSTRUCCIONES EN EL ENTORNO GLOBAL QUE EJECUTARA EL PROGRAMA
 ENTORNO_GLOBAL
-    :ENTORNO_GLOBAL GLOBAL
-    |GLOBAL
+    :ENTORNO_GLOBAL GLOBAL {
+        $1.push($2);
+        $$ = $1;
+    }
+    |GLOBAL{
+        $$=[$1];
+    }
     ;
 
 //INSTRUCCIONES GLOBALES
 GLOBAL    
-    :DECLARACION_VARIABLE
-    |DECLARACION_FUNCIONES
-    |INICIAR_SISTEMA
+    :DECLARACION_VARIABLE{
+        $$=$1;
+    }
+    |DECLARACION_FUNCIONES{
+        $$=$1;
+    }
+    |INICIAR_SISTEMA{
+        $$=$1
+    }
     ;
 
 //DECLARAR EL INICIO DEL SISTEMA
@@ -184,8 +195,13 @@ INICIAR_SISTEMA
 
 //LISTA DE VALORES PARA INGRESAR LOS PARAMETROS DE FUNCIONES Y METODOS PARA INICIAR EL SISTEMA
 LISTA_VALORES
-    :LISTA_VALORES ',' EXPRESION
-    |EXPRESION
+    :LISTA_VALORES ',' EXPRESION{
+        $1.push($3);
+        $$ = $1;
+    }
+    |EXPRESION{
+        $$ = [$1];
+    }
     ;
 
 
@@ -208,17 +224,32 @@ PARAMETROS_FUNCION
 
 //LISTA DE INSTRUCCIONES
 INSTRUCCIONES
-    :INSTRUCCIONES INSTRUCCION 
-    |INSTRUCCION
+    :INSTRUCCIONES INSTRUCCION{
+        $1.push($2);
+        $$ = $1;
+    }
+    |INSTRUCCION{
+        $$ = [$1];
+    }
     ;
 
 //INSTRUCCIONES QUE INGRESARAN EN UNA LISTA
 INSTRUCCION
-    :DECLARACION_VARIABLE 
-    |ASIGNACION ';'
-    |FUNCIONES_CALL ';'
-    |SENTENCIAS
-    |TRANSFERENCIA ';'
+    :DECLARACION_VARIABLE{
+        $$ = $1;
+    }
+    |ASIGNACION ';'{
+        $$ = $1;
+    }
+    |FUNCIONES_CALL ';'{
+        $$ = $1;
+    }
+    |SENTENCIAS{
+        $$ = $1;
+    }
+    |TRANSFERENCIA ';'{
+        $$ = $1;
+    }
     ;
 
 //SENTENCIAS DE TRANSFERENCIA
@@ -231,11 +262,21 @@ TRANSFERENCIA
 
 //SENTENCIAS (CICLOS Y CONDICIONES) A UTILIZAR EN EL LENGUAJE
 SENTENCIAS
-    :GENERARIF
-    |GENERARSWITCH
-    |GENERARWHILE
-    |GENERARFOR
-    |GENERARDOWHILE
+    :GENERARIF{
+        $$ = $1;
+    }
+    |GENERARSWITCH{
+        $$ = $1;
+    }
+    |GENERARWHILE{
+        $$ = $1;
+    }
+    |GENERARFOR{
+        $$ = $1;
+    }
+    |GENERARDOWHILE{
+        $$ = $1;
+    }
     ;
    
 //SENTENCIA PARA EL CICLO IF Y TODAS SUS VARIANTES
@@ -298,14 +339,18 @@ ENTORNO
 
 //LLAMADA DE FUNCIONES
 FUNCIONES_CALL   
-    :FUNCIONES_NATIVAS
-    |FUNCIONES_DECLARADAS
+    :FUNCIONES_NATIVAS{
+        $$ = $1;
+    }
+    |FUNCIONES_DECLARADAS{
+        $$ = $1;
+    }
     ;
 
 //LLAMADA DE FUNCIONES DECLARADAS
 FUNCIONES_DECLARADAS
-    :'id' '(' PARAMETROS_CALL ')' ';'
-    |'id' '(' ')' ';'
+    :'id' '(' PARAMETROS_CALL ')' 
+    |'id' '(' ')' 
     ;
 
 //PARAMETROS DE UNA LLAMADA DE FUNCION O METODO
@@ -320,15 +365,14 @@ FUNCIONES_NATIVAS
     |'getValue' '(' id ',' EXPRESION ')'
     |'setValue' '(' id ',' EXPRESION ',' EXPRESION ')'
     |'WriteLine' '(' EXPRESION ')'
-    |'WriteLine' '(' FUNCIONES_CALL ')'
     |'toLower' '(' id ',' EXPRESION ')' 
     |'toUpper' '(' id ',' EXPRESION ')' 
-    |'length' '(' VALORES ')' 
-    |'truncate' '(' VALORES ')' 
-    |'round' '(' VALORES ')' 
-    |'typeof' '(' VALORES ')' 
-    |'tostring' '(' VALORES ')' 
-    |'toCharArray' '(' VALORES ')' 
+    |'length' '(' EXPRESION ')' 
+    |'truncate' '(' EXPRESION ')' 
+    |'round' '(' EXPRESION ')' 
+    |'typeof' '(' EXPRESION ')' 
+    |'tostring' '(' EXPRESION ')' 
+    |'toCharArray' '(' EXPRESION ')' 
     ;
 
 
@@ -338,29 +382,29 @@ DECLARACION_VARIABLE
     |'lista_dinamica' '<' TIPO_DATO '>' ASIGNACION ';'
     ;
 
-//LISTA DE VARIABLES
-ID_LIST
-    :ID_LIST ',' 'id'
-    |'id'
-    ;
+
 
 //ASIGNACION DE VARIABLES
 ASIGNACION
-    :ID_LIST '=' EXPRESION
-    |ID_LIST '=' CASTING
-    |ID_LIST '=' FUNCIONES_CALL
-    |ID_LIST '[' ']'
-    |ID_LIST '=' 'new' 'lista_dinamica' '<' TIPO_DATO '>'
-    |ID_LIST '[' ']' '=' 'new' TIPO_DATO '[' EXPRESION ']'
-    |ID_LIST '[' ']' '=' '{' VALORES_LIST '}'
-    |ID_LIST '[' ']' '=' FUNCIONES_CALL
-    |ID_LIST '[' EXPRESION ']' '=' EXPRESION
-    |ID_LIST '[' EXPRESION ']' '=' FUNCIONES_CALL
+    :LISTA_ID '=' EXPRESION
+    |LISTA_ID '[' ']' '=' EXPRESION
+    |LISTA_ID '[' EXPRESION ']' '=' EXPRESION
+    |LISTA_ID '[' ']'
+    |LISTA_ID
     |'id' '++'
     |'id' '--'
-    |ID_LIST
     ;
 
+//LISTA DE ID
+LISTA_ID
+    :LISTA_ID ',' 'id'{
+        $1.push($3);
+        $$ = $1;
+    }
+    |'id'{
+        $$ = [$1];
+    }
+    ;
 
 //TIPOS DE DATO
 TIPO_DATO
@@ -377,8 +421,20 @@ EXPRESION
     |EXPLOG
     |EXPREL
     |EXPTER
+    |FUNCIONES_CALL
+    |'(' TIPO_DATO ')' EXPRESION
     |'(' EXPRESION ')'
+    |'new' 'lista_dinamica' '<' TIPO_DATO '>'
+    |ARRAY
     |VALORES
+    |'id'
+    ;
+
+//EXPRESIONES PARA DAR EL VALOR DEL ARRAY
+ARRAY
+    :'{' VALORES_LIST '}'
+    |'new' TIPO_DATO '[' EXPRESION ']'
+    |'id' '[' VALORES ']'
     ;
 
 //EXPRESIONES ARITMETICAS
@@ -414,10 +470,7 @@ EXPTER
     :EXPRESION '?' EXPRESION ':' EXPRESION
     ;
 
-//CASTING
-CASTING
-    :'(' TIPO_DATO ')' EXPRESION
-    ;
+
 
 //LISTA DE LITERALES
 VALORES_LIST
@@ -432,9 +485,5 @@ VALORES
     |'int'
     |'string'
     |'boolean'
-    |'id'
-    |'id' '[' EXPRESION ']'
     ;
-
-
 

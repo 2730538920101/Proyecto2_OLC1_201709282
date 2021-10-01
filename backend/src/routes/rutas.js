@@ -14,7 +14,12 @@ router.post('/', (req, res)=>{
         "code": code
     }
     const analisis = gram.parse(code);
-    res.send(analisis);
+    
+    //res.send(analisis);
+    const result = {
+        "resultado":analisis
+    }
+    res.send(result)
 });
 
 module.exports = router;
