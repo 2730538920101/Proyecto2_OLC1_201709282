@@ -1,5 +1,5 @@
 const express = require('express');
-const gram = require('../gramatica/gramatica');
+const gram = require('../../dist/src/gramatica/gramatica');
 const router = express.Router();
 
 router.get('/', (req,res)=>{
