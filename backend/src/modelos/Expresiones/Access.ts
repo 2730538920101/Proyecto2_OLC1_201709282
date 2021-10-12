@@ -11,8 +11,10 @@ export class Access extends Expression{
 
     public execute(environment: Environment): Retorno {
         const value = environment.getVar(this.id);
-        if(value == null)
+        if(value == null){
             throw new MiError(this.line,this.column, TypeError.SEMANTICO, "LA VARIABLE NO EXISTE");
-        return {value : value.valor, type : value.type};
+        }else{
+            return {value : value.valor, type : value.type};
+        }
     }
 }

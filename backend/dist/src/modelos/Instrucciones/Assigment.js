@@ -15,25 +15,32 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Access = void 0;
-var Expresiones_1 = require("../Abstract/Expresiones");
+exports.Assigment = void 0;
+var Instrucciones_1 = require("../Abstract/Instrucciones");
 var Error_1 = require("../Errores/Error");
-var Access = /** @class */ (function (_super) {
-    __extends(Access, _super);
-    function Access(id, line, column) {
+var Assigment = /** @class */ (function (_super) {
+    __extends(Assigment, _super);
+    function Assigment(id, value, line, column) {
         var _this = _super.call(this, line, column) || this;
         _this.id = id;
+        _this.value = value;
         return _this;
     }
-    Access.prototype.execute = function (environment) {
-        var value = environment.getVar(this.id);
-        if (value == null) {
-            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO EXISTE");
-        }
-        else {
-            return { value: value.valor, type: value.type };
+    Assigment.prototype.execute = function (environment) {
+        var val = this.value.execute(environment);
+        for (var i = 0; i < this.id.length; i++) {
+            var valorid = this.id[i].execute(environment).value;
+            if (valorid) {
+                environment.guardar(valorid, val.value, val.type);
+            }
+            else {
+                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO SE ENCUENTRA DECLARADA");
+            }
         }
     };
-    return Access;
-}(Expresiones_1.Expression));
-exports.Access = Access;
+    Assigment.prototype.getType = function (environment) {
+        return this.value.execute(environment).type;
+    };
+    return Assigment;
+}(Instrucciones_1.Instruction));
+exports.Assigment = Assigment;

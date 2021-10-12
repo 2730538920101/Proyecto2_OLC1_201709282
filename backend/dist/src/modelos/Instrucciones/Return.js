@@ -15,25 +15,24 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Access = void 0;
-var Expresiones_1 = require("../Abstract/Expresiones");
-var Error_1 = require("../Errores/Error");
-var Access = /** @class */ (function (_super) {
-    __extends(Access, _super);
-    function Access(id, line, column) {
+exports.Return = void 0;
+var Instrucciones_1 = require("../Abstract/Instrucciones");
+var Return = /** @class */ (function (_super) {
+    __extends(Return, _super);
+    function Return(expr, line, column) {
         var _this = _super.call(this, line, column) || this;
-        _this.id = id;
+        _this.expr = expr;
         return _this;
     }
-    Access.prototype.execute = function (environment) {
-        var value = environment.getVar(this.id);
-        if (value == null) {
-            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO EXISTE");
+    Return.prototype.execute = function (environment) {
+        if (this.expr != null) {
+            var value = this.expr.execute(environment);
+            return { line: this.line, column: this.column, type: 'Return', value: value };
         }
         else {
-            return { value: value.valor, type: value.type };
+            return { line: this.line, column: this.column, type: 'Return', value: null };
         }
     };
-    return Access;
-}(Expresiones_1.Expression));
-exports.Access = Access;
+    return Return;
+}(Instrucciones_1.Instruction));
+exports.Return = Return;

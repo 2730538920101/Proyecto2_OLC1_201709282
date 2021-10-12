@@ -15,25 +15,34 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Access = void 0;
+exports.NewCleanArray = void 0;
 var Expresiones_1 = require("../Abstract/Expresiones");
+var Retorno_1 = require("../Abstract/Retorno");
+var Array_1 = require("../Symbol/Array");
+var Symbol_1 = require("../Symbol/Symbol");
 var Error_1 = require("../Errores/Error");
-var Access = /** @class */ (function (_super) {
-    __extends(Access, _super);
-    function Access(id, line, column) {
+var NewCleanArray = /** @class */ (function (_super) {
+    __extends(NewCleanArray, _super);
+    function NewCleanArray(expr, type, line, column) {
         var _this = _super.call(this, line, column) || this;
-        _this.id = id;
+        _this.expr = expr;
+        _this.type = type;
         return _this;
     }
-    Access.prototype.execute = function (environment) {
-        var value = environment.getVar(this.id);
-        if (value == null) {
-            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO EXISTE");
+    NewCleanArray.prototype.execute = function (environment) {
+        var array = new Array_1.Array();
+        var index = 0;
+        var value = this.expr.execute(environment);
+        if (value.type == Retorno_1.Type.INT) {
+            for (var i = 0; i < value.value; i++) {
+                array.setValue(index++, new Symbol_1.Symbol(0, '', value.type));
+            }
+            return { value: array, type: Retorno_1.Type.ARRAY };
         }
         else {
-            return { value: value.valor, type: value.type };
+            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE HA PODIDO INSTANCIAR EL ARREGLO PORQUE LA EXPRESION ENTRE LAS LLAVES NO ES UN NUMERO");
         }
     };
-    return Access;
+    return NewCleanArray;
 }(Expresiones_1.Expression));
-exports.Access = Access;
+exports.NewCleanArray = NewCleanArray;

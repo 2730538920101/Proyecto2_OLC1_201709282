@@ -1,11 +1,11 @@
 import { Instruction } from "../Abstract/Instrucciones";
 import { Expression } from "../Abstract/Expresiones";
 import { Environment } from "../Symbol/Enviorment";
-import { Params } from "../Expresiones/Params";
+
 
 export class Function extends Instruction{
 
-    constructor(private id: string, public type: TypeFunction, public statment: Instruction, public parametros : Array<Params>, line : number, column : number){
+    constructor(private id: string, public type: TypeFunction, public statment: Instruction, public parametros : Array<Expression>, line : number, column : number){
         super(line, column);
     }
 

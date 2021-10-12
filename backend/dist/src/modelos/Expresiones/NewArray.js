@@ -20,21 +20,29 @@ var Expresiones_1 = require("../Abstract/Expresiones");
 var Retorno_1 = require("../Abstract/Retorno");
 var Array_1 = require("../Symbol/Array");
 var Symbol_1 = require("../Symbol/Symbol");
+var Error_1 = require("../Errores/Error");
 var NewArray = /** @class */ (function (_super) {
     __extends(NewArray, _super);
-    function NewArray(listExpr, line, column) {
+    function NewArray(listExpr, type, line, column) {
         var _this = _super.call(this, line, column) || this;
         _this.listExpr = listExpr;
+        _this.type = type;
         return _this;
     }
     NewArray.prototype.execute = function (environment) {
+        var _this = this;
         var array = new Array_1.Array();
         var index = 0;
-        this.listExpr.forEach(function (expr) {
-            var value = expr.execute(environment);
-            array.setValue(index++, new Symbol_1.Symbol(value.value, '', value.type));
-        });
-        return { value: array, type: Retorno_1.Type.ARRAY };
+        if (this.listExpr.every(function (actual) { return actual.execute(environment).type == _this.type; })) {
+            this.listExpr.forEach(function (expr) {
+                var value = expr.execute(environment);
+                array.setValue(index++, new Symbol_1.Symbol(value.value, '', value.type));
+            });
+            return { value: array, type: Retorno_1.Type.ARRAY };
+        }
+        else {
+            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LOS ELEMENTOS DEL ARRAY DEBEN SER DEL MISMO TIPO");
+        }
     };
     return NewArray;
 }(Expresiones_1.Expression));

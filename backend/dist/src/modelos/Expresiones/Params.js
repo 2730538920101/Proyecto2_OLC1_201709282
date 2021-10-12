@@ -16,7 +16,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Params = void 0;
-var Instrucciones_1 = require("../Abstract/Instrucciones");
+var Expresiones_1 = require("../Abstract/Expresiones");
 var Params = /** @class */ (function (_super) {
     __extends(Params, _super);
     function Params(id, type, line, column) {
@@ -27,7 +27,8 @@ var Params = /** @class */ (function (_super) {
     }
     Params.prototype.execute = function (environment) {
         environment.guardar(this.id, null, this.type);
+        return { value: this.id, type: this.type };
     };
     return Params;
-}(Instrucciones_1.Instruction));
+}(Expresiones_1.Expression));
 exports.Params = Params;

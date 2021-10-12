@@ -7,13 +7,24 @@
     const { Ternary } = require('../modelos/Expresiones/Ternary');
     const { AccesArray } = require('../modelos/Expresiones/AccesArray');
     const { NewArray } = require('../modelos/Expresiones/NewArray');
+    const { NewCleanArray } = require('../modelos/Expresiones/NewCleanArray');
+    const { NewList } = require('../modelos/Expresiones/NewList');
     const { Array } = require('../modelos/Symbol/Array');
+    const { List } = require('../modelos/Symbol/List');
     const { Access } = require('../modelos/Expresiones/Access');
     const { Params } = require('../modelos/Expresiones/Params');
-    //const { CallExp } = require('../modelos/Expresiones/CallExp');
-    //const { Call } = require('../modelos/Instrucciones/Call');
+    const { Casting } = require('../modelos/Expresiones/Casting');
+    const { ArithmeticAccess, ArithmeticAccessOption} = require('../modelos/Expresiones/ArithmeticAccess');
+    const { CallExp, TypeCallExp } = require('../modelos/Expresiones/CallExp');
+    const { Call, TypeCall } = require('../modelos/Instrucciones/Call');
+    const { Declaration } = require('../modelos/Instrucciones/Declaration');
     const { Function } = require('../modelos/Instrucciones/Function');
     const { Statement } = require('../modelos/Instrucciones/Statement');
+    const { Assigment } = require('../modelos/Instrucciones/Assigment');
+    const { AccessArrayAssigment } = require('../modelos/Instrucciones/AccessArrayAssigment');
+    const { Break } = require('../modelos/Instrucciones/Break');
+    const { Continue } = require('../modelos/Instrucciones/Continue');
+    const { Return } = require('../modelos/Instrucciones/Return');
     console.log("SE COMPILO EL ARCHIVO .JISON");
 %}
 
@@ -195,6 +206,7 @@ ENTORNO_GLOBAL
 //INSTRUCCIONES GLOBALES
 GLOBAL    
     :DECLARACION_VARIABLE{
+        console.log($1);
         $$=$1;
     }
     |DECLARACION_FUNCIONES{
@@ -202,14 +214,19 @@ GLOBAL
         $$=$1;
     }
     |INICIAR_SISTEMA{
+        console.log($1);
         $$=$1
     }
     ;
 
 //DECLARAR EL INICIO DEL SISTEMA
 INICIAR_SISTEMA
-    :'start' 'with' 'id' '(' ')' ';'
-    |'start' 'with' 'id' '(' LISTA_VALORES ')' ';'
+    :'start' 'with' 'id' '(' ')' ';'{
+        $$ = new Call($3, [], TypeCall.START, @1.first_line, @1.first_column);
+    }
+    |'start' 'with' 'id' '(' LISTA_VALORES ')' ';'{
+        $$ = new Call($3, $5, TypeCall.START, @1.first_line, @1.first_column);
+    }
     ;
 
 //LISTA DE VALORES PARA INGRESAR LOS PARAMETROS DE FUNCIONES Y METODOS PARA INICIAR EL SISTEMA
@@ -227,7 +244,6 @@ LISTA_VALORES
 //DECLARACION DE FUNCIONES O METODOS
 DECLARACION_FUNCIONES
     :TIPO_DATO 'id' '(' PARAMETROS_FUNCION ')' ENTORNO{
-        
         if($1 == "int"){
             $$ = new Function($2, 0, $6, $4, @1.first_line, @1.first_column);
         }else if($1 == "double"){
@@ -243,8 +259,7 @@ DECLARACION_FUNCIONES
         }    
         
     }
-    |TIPO_DATO 'id' '(' ')' ENTORNO{
-        
+    |TIPO_DATO 'id' '(' ')' ENTORNO{   
         if($1 == "int"){
             $$ = new Function($2, 0, $5, [], @1.first_line, @1.first_column);
         }else if($1 == "double"){
@@ -323,28 +338,41 @@ INSTRUCCIONES
 //INSTRUCCIONES QUE INGRESARAN EN UNA LISTA
 INSTRUCCION
     :DECLARACION_VARIABLE{
+        //console.log($1);
         $$ = $1;
     }
     |ASIGNACION ';'{
+        //console.log($1);
         $$ = $1;
     }
-    |FUNCIONES_CALL ';'{
+    |METODOS_CALL ';'{
+        //console.log($1);
         $$ = $1;
     }
     |SENTENCIAS{
+        //console.log($1);
         $$ = $1;
     }
     |TRANSFERENCIA ';'{
+        //console.log($1);
         $$ = $1;
     }
     ;
 
 //SENTENCIAS DE TRANSFERENCIA
 TRANSFERENCIA   
-    :'break' 
-    |'return' EXPRESION 
-    |'return' 
-    |'continue' 
+    :'break'{
+        $$ = new Break(@1.first_line, @1.first_column);
+    }
+    |'return' EXPRESION{
+        $$ = new Return($2, @1.first_line, @1.first_column);
+    } 
+    |'return' {
+        $$ = new Return(null, @1.first_line, @1.first_column);
+    }
+    |'continue'{
+        $$ = new Continue(@1.first_line, @1.first_column);
+    }
     ;
 
 //SENTENCIAS (CICLOS Y CONDICIONES) A UTILIZAR EN EL LENGUAJE
@@ -438,7 +466,7 @@ ENTORNO
         });
         let env2 = new Statement($3, @1.first_line, @1.first_column);
         entlist.push(env2);
-        console.log(entlist);
+        //console.log(entlist);
         $$ = entlist;
     }
     |'{' CASES_LIST '}'{
@@ -447,55 +475,137 @@ ENTORNO
             let env = new Statement(bloque, @1.first_line, @1.first_column);
             entlist2.push(env);    
         });
-        console.log(entlist2);
+        //console.log(entlist2);
         $$ = entlist2;
     }
     |'{' DEFAULT '}'{
         const entlist3 = [];
         let env3 = new Statement($2, @1.first_line, @1.first_column);
         entlist3.push(env3);
-        console.log(entlist3)
+        //console.log(entlist3)
         $$ = entlist3;
     }
     ;
 
-//LLAMADA DE FUNCIONES
-FUNCIONES_CALL   
-    :'append' '(' LISTA_VALORES ')'
-    |'setValue' '(' LISTA_VALORES ')'
-    |'WriteLine' '(' LISTA_VALORES ')'
-    |'getValue' '(' LISTA_VALORES ')'
-    |'toLower' '(' LISTA_VALORES ')' 
-    |'toUpper' '(' LISTA_VALORES ')' 
-    |'length' '(' LISTA_VALORES ')' 
-    |'truncate' '(' LISTA_VALORES ')' 
-    |'round' '(' LISTA_VALORES ')' 
-    |'typeof' '(' LISTA_VALORES ')' 
-    |'tostring' '(' LISTA_VALORES ')' 
-    |'toCharArray' '(' LISTA_VALORES ')' 
+//LLAMADA A LOS METODOS
+METODOS_CALL
+    :'append' '(' LISTA_VALORES ')'{
+        $$ = new Call($1, $3, TypeCall.APPEND, @1.first_line, @1.first_column);
+    }
+    |'setValue' '(' LISTA_VALORES ')'{
+        $$ = new Call($1, $3, TypeCall.SETVALUE, @1.first_line, @1.first_column);
+    }
+    |'WriteLine' '(' LISTA_VALORES ')'{
+        $$ = new Call($1, $3, TypeCall.WRITELINE, @1.first_line, @1.first_column);
+    }
+    |'id' '(' LISTA_VALORES ')'{
+        $$ = new Call($1, $3, TypeCall.DECLARED, @1.first_line, @1.first_column);
+    }
+    |'id' '(' ')'{
+        $$ = new Call($1, [], TypeCall.DECLARED, @1.first_line, @1.first_column);
+    } 
     ;
 
-
+//LLAMADA DE FUNCIONES
+FUNCIONES_CALL   
+    :'getValue' '(' LISTA_VALORES ')'{
+        $$ = new CallExp($1, $3, TypeCallExp.GETVALUE, @1.first_line, @1.first_column);
+    }
+    |'toLower' '(' LISTA_VALORES ')'{
+        $$ = new CallExp($1, $3, TypeCallExp.TOLOWER, @1.first_line, @1.first_column);
+    }
+    |'toUpper' '(' LISTA_VALORES ')'{
+        $$ = new CallExp($1, $3, TypeCallExp.TOUPPER, @1.first_line, @1.first_column);
+    }
+    |'length' '(' LISTA_VALORES ')'{
+        $$ = new CallExp($1, $3, TypeCallExp.LENGTH, @1.first_line, @1.first_column);
+    }
+    |'truncate' '(' LISTA_VALORES ')'{
+        $$ = new CallExp($1, $3, TypeCallExp.TRUNCATE, @1.first_line, @1.first_column);
+    }
+    |'round' '(' LISTA_VALORES ')'{
+        $$ = new CallExp($1, $3, TypeCallExp.ROUND, @1.first_line, @1.first_column);
+    }
+    |'typeof' '(' LISTA_VALORES ')'{
+        $$ = new CallExp($1, $3, TypeCallExp.TYPEOF, @1.first_line, @1.first_column);
+    }
+    |'tostring' '(' LISTA_VALORES ')'{
+        $$ = new CallExp($1, $3, TypeCallExp.TOSTRING, @1.first_line, @1.first_column);
+    }
+    |'toCharArray' '(' LISTA_VALORES ')'{
+        $$ = new CallExp($1, $3, TypeCallExp.TOCHARARRAY, @1.first_line, @1.first_column);
+    }
+    |'id' '(' LISTA_VALORES ')'{
+        $$ = new CallExp($1, $3, TypeCallExp.DECLARED, @1.first_line, @1.first_column);
+    }
+    |'id' '(' ')'{
+        $$ = new CallExp($1, [], TypeCallExp.DECLARED, @1.first_line, @1.first_column);
+    } 
+    ;
 
 
 
 //DECLARACION DE VARIABLE
 DECLARACION_VARIABLE
-    :TIPO_DATO ASIGNACION ';'
-    |'lista_dinamica' '<' TIPO_DATO '>' ASIGNACION ';'
+    :TIPO_DATO ASIGNACION ';'{
+        if($1 == "int"){
+            $$ = new Declaration( 0, $2, @1.first_line, @1.first_column);
+        }else if($1 == "double"){
+            $$ = new Declaration( 1, $2, @1.first_line, @1.first_column);
+        }else if($1 == "boolean"){
+            $$ = new Declaration( 2, $2, @1.first_line, @1.first_column);
+        }else if($1 == "char"){
+            $$ = new Declaration( 3, $2, @1.first_line, @1.first_column);
+        }else if($1 == "string"){
+            $$ = new Declaration( 4, $2, @1.first_line, @1.first_column);
+        }    
+    }
+    |'lista_dinamica' '<' TIPO_DATO '>' ASIGNACION ';'{
+         if($3 == "int"){
+            $$ = new Declaration( 0, $5, @1.first_line, @1.first_column);
+        }else if($3 == "double"){
+            $$ = new Declaration( 1, $5, @1.first_line, @1.first_column);
+        }else if($3 == "boolean"){
+            $$ = new Declaration( 2, $5, @1.first_line, @1.first_column);
+        }else if($3 == "char"){
+            $$ = new Declaration( 3, $5, @1.first_line, @1.first_column);
+        }else if($3 == "string"){
+            $$ = new Declaration( 4, $5, @1.first_line, @1.first_column);
+        }    
+    }
     ;
 
 
 
 //ASIGNACION DE VARIABLES
 ASIGNACION
-    :LISTA_ID '=' EXPRESION
-    |LISTA_ID '[' ']' '=' EXPRESION
-    |LISTA_ID '[' EXPRESION ']' '=' EXPRESION
-    |LISTA_ID '[' ']'
-    |LISTA_ID
-    |'id' '++'
-    |'id' '--'
+    :LISTA_ID '=' EXPRESION{
+        $$ = new Assigment($1,$3, @1.first_line, @1.first_column);
+        //console.log($3);
+
+    }
+    |LISTA_ID '[' ']' '=' EXPRESION{
+        $$ = new Assigment($1,$5, @1.first_line, @1.first_column);
+        //console.log($5);
+    }
+    |LISTA_ID '[' EXPRESION ']' '=' EXPRESION{
+        $$ = new AccessArrayAssigment($1, $3, $6, @1.first_line, @1.first_column);
+        //console.log($6);
+    }
+    |LISTA_ID '[' ']'{
+        $$ = new Assigment($1,[], @1.first_line, @1.first_column);
+        //console.log($1);
+    }
+    |LISTA_ID{
+        $$ = new Assigment($1,[], @1.first_line, @1.first_column);
+        //console.log($1);
+    }
+     |'id' '++'{
+        $$ = new ArithmeticAccess($1, 0, @1.first_line, @1.first_column);
+    }
+    |'id' '--'{
+        $$ = new ArithmeticAccess($1, 1, @1.first_line, @1.first_column);
+    }
     ;
 
 //LISTA DE ID
@@ -534,48 +644,82 @@ TIPO_DATO
 //EXPRESIONES
 EXPRESION
     :EXPMAT{
-        console.log($1);
         $$ = $1;
     }
     |EXPLOG{
-        console.log($1);
         $$ = $1;
     }
     |EXPREL{
-        console.log($1);
         $$ = $1;
     }
     |EXPTER{
-        console.log($1);
         $$ = $1;
     }
-    |FUNCIONES_CALL
-    |'(' TIPO_DATO ')' EXPRESION
+    |FUNCIONES_CALL{
+        $$ = $1;
+    }
+    |'(' TIPO_DATO ')' EXPRESION{
+        if($2 == "int"){
+            $$ = new Casting(0, $4, @1.first_line, @1.first_column);
+        }else if($2 == "double"){
+            $$ = new Casting(2, $4, @1.first_line, @1.first_column);
+        }else if($2 == "char"){
+            $$ = new Casting(3, $4, @1.first_line, @1.first_column);
+        }else{
+            $$ = new Casting(5, $4, @1.first_line, @1.first_column);
+        }
+    }
     |'(' EXPRESION ')'{
         $$ = $2
     }
-    |'new' 'lista_dinamica' '<' TIPO_DATO '>'
+    |'new' 'lista_dinamica' '<' TIPO_DATO '>'{
+         if($4 == "int"){
+            $$ = new NewList(0, @1.first_line, @1.first_column);
+        }else if($4 == "double"){
+            $$ = new NewList(1, @1.first_line, @1.first_column);
+        }else if($4 == "boolean"){
+            $$ = new NewList(2, @1.first_line, @1.first_column);
+        }else if($4 == "char"){
+            $$ = new NewList(3, @1.first_line, @1.first_column);
+        }else if($4 == "string"){
+            $$ = new NewList(4, @1.first_line, @1.first_column);
+        }    
+    }
     |ARRAY{
-        console.log($1);
         $$ = $1;
     }
     |VALORES{
-        console.log($1);
         $$ = $1;
     }
     |'id'{
-         $$ = new Access($1, @1.first_line, @1.first_column);
+        $$ = new Access($1, @1.first_line, @1.first_column);
     }
-    |'id' '(' LISTA_VALORES ')' 
-    |'id' '(' ')'
+     |'id' '++'{
+        $$ = new ArithmeticAccess($1, 0, @1.first_line, @1.first_column);
+    }
+    |'id' '--'{
+        $$ = new ArithmeticAccess($1, 1, @1.first_line, @1.first_column);
+    }
     ;
 
 //EXPRESIONES PARA DAR EL VALOR DEL ARRAY
 ARRAY
     :'{' VALORES_LIST '}'{
-        $$ = new NewArray($2, @1.first_line, @1.first_column);
+        $$ = new NewArray($2, $2[0].type, @1.first_line, @1.first_column);
     }
-    |'new' TIPO_DATO '[' EXPRESION ']'
+    |'new' TIPO_DATO '[' EXPRESION ']'{
+        if($2 == "int"){
+            $$ = new NewCleanArray($4, 0, @1.first_line, @1.first_column);
+        }else if($2 == "double"){
+            $$ = new NewCleanArray($4, 1, @1.first_line, @1.first_column);
+        }else if($2 == "boolean"){
+            $$ = new NewCleanArray($4, 2, @1.first_line, @1.first_column);
+        }else if($2 == "char"){
+            $$ = new NewCleanArray($4, 3, @1.first_line, @1.first_column);
+        }else if($2 == "string"){
+            $$ = new NewCleanArray($4, 4, @1.first_line, @1.first_column);
+        }
+    }
     |'id' '[' VALORES ']'{
         $$ = new AccesArray($1, $3, @1.first_line, @1.first_column);
     }

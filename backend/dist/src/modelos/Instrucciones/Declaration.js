@@ -15,25 +15,29 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Access = void 0;
-var Expresiones_1 = require("../Abstract/Expresiones");
+exports.Declaration = void 0;
+var Instrucciones_1 = require("../Abstract/Instrucciones");
 var Error_1 = require("../Errores/Error");
-var Access = /** @class */ (function (_super) {
-    __extends(Access, _super);
-    function Access(id, line, column) {
+var Retorno_1 = require("../Abstract/Retorno");
+var Declaration = /** @class */ (function (_super) {
+    __extends(Declaration, _super);
+    function Declaration(type, asignacion, line, column) {
         var _this = _super.call(this, line, column) || this;
-        _this.id = id;
+        _this.type = type;
+        _this.asignacion = asignacion;
         return _this;
     }
-    Access.prototype.execute = function (environment) {
-        var value = environment.getVar(this.id);
-        if (value == null) {
-            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO EXISTE");
-        }
-        else {
-            return { value: value.valor, type: value.type };
+    Declaration.prototype.execute = function (environment) {
+        if (this.type != Retorno_1.Type.NULL) {
+            var tipo = this.asignacion.getType(environment);
+            if (tipo == this.type) {
+                this.asignacion.execute(environment);
+            }
+            else {
+                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE DECLARAR LA VARIABLE PORQUE EL TIPO DE LA EXPRESION ASIGNADA NO COINCIDE CON EL TIPO DE LA DECLARACION");
+            }
         }
     };
-    return Access;
-}(Expresiones_1.Expression));
-exports.Access = Access;
+    return Declaration;
+}(Instrucciones_1.Instruction));
+exports.Declaration = Declaration;

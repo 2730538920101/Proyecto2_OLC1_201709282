@@ -15,25 +15,16 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Access = void 0;
-var Expresiones_1 = require("../Abstract/Expresiones");
-var Error_1 = require("../Errores/Error");
-var Access = /** @class */ (function (_super) {
-    __extends(Access, _super);
-    function Access(id, line, column) {
-        var _this = _super.call(this, line, column) || this;
-        _this.id = id;
-        return _this;
+exports.Break = void 0;
+var Instrucciones_1 = require("../Abstract/Instrucciones");
+var Break = /** @class */ (function (_super) {
+    __extends(Break, _super);
+    function Break(line, column) {
+        return _super.call(this, line, column) || this;
     }
-    Access.prototype.execute = function (environment) {
-        var value = environment.getVar(this.id);
-        if (value == null) {
-            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO EXISTE");
-        }
-        else {
-            return { value: value.valor, type: value.type };
-        }
+    Break.prototype.execute = function (environment) {
+        return { line: this.line, column: this.column, type: 'Continue' };
     };
-    return Access;
-}(Expresiones_1.Expression));
-exports.Access = Access;
+    return Break;
+}(Instrucciones_1.Instruction));
+exports.Break = Break;
