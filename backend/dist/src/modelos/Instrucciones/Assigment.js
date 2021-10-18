@@ -17,6 +17,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Assigment = void 0;
 var Instrucciones_1 = require("../Abstract/Instrucciones");
+var Retorno_1 = require("../Abstract/Retorno");
 var Error_1 = require("../Errores/Error");
 var Assigment = /** @class */ (function (_super) {
     __extends(Assigment, _super);
@@ -28,18 +29,28 @@ var Assigment = /** @class */ (function (_super) {
     }
     Assigment.prototype.execute = function (environment) {
         var val = this.value.execute(environment);
-        for (var i = 0; i < this.id.length; i++) {
-            var valorid = this.id[i].execute(environment).value;
-            if (valorid) {
-                environment.guardar(valorid, val.value, val.type);
+        if (val != null || val != undefined) {
+            for (var i = 0; i < this.id.length; i++) {
+                var iden = this.id[i];
+                if (iden) {
+                    environment.guardar(iden, val.value, val.type);
+                }
+                else {
+                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO SE ENCUENTRA DECLARADA");
+                }
             }
-            else {
-                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO SE ENCUENTRA DECLARADA");
-            }
+        }
+        else {
+            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE PUEDE ASIGNAR EL VALOR");
         }
     };
     Assigment.prototype.getType = function (environment) {
-        return this.value.execute(environment).type;
+        if ((this.value.execute(environment).type == Retorno_1.Type.ARRAY) || (this.value.execute(environment).type == Retorno_1.Type.LIST)) {
+            return this.value.execute(environment).value.getValue(0).type;
+        }
+        else {
+            return this.value.execute(environment).type;
+        }
     };
     return Assigment;
 }(Instrucciones_1.Instruction));

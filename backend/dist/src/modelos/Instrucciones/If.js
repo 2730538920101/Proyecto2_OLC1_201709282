@@ -15,25 +15,37 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Return = void 0;
+exports.If = void 0;
 var Instrucciones_1 = require("../Abstract/Instrucciones");
 var Retorno_1 = require("../Abstract/Retorno");
-var Return = /** @class */ (function (_super) {
-    __extends(Return, _super);
-    function Return(expr, line, column) {
+var Error_1 = require("../Errores/Error");
+var If = /** @class */ (function (_super) {
+    __extends(If, _super);
+    function If(condition, code, statement, line, column) {
         var _this = _super.call(this, line, column) || this;
-        _this.expr = expr;
+        _this.condition = condition;
+        _this.code = code;
+        _this.statement = statement;
         return _this;
     }
-    Return.prototype.execute = function (environment) {
-        if (this.expr != null) {
-            var value = this.expr.execute(environment);
-            return { value: value, type: Retorno_1.Type.RETURN };
+    If.prototype.execute = function (env) {
+        var _a;
+        var condition = this.condition.execute(env);
+        if (condition.type != Retorno_1.Type.BOOLEAN) {
+            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA CONDICION NO RETORNA UN VALOR BOOLEANO");
         }
         else {
-            return { value: null, type: Retorno_1.Type.RETURN };
+            if (condition.value === true) {
+                return this.code.execute(env);
+            }
+            else if (condition.value === false) {
+                return (_a = this.statement) === null || _a === void 0 ? void 0 : _a.execute(env);
+            }
+            else {
+                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA CONDICION NO SE HA PODIDO EVALUAR");
+            }
         }
     };
-    return Return;
+    return If;
 }(Instrucciones_1.Instruction));
-exports.Return = Return;
+exports.If = If;

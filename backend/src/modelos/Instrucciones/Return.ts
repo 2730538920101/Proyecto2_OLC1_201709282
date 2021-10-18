@@ -1,6 +1,7 @@
 import { Instruction } from "../Abstract/Instrucciones";
 import { Environment } from "../Symbol/Enviorment";
 import { Expression } from "../Abstract/Expresiones";
+import { Retorno, Type } from '../Abstract/Retorno';
 
 export class Return extends Instruction{
 
@@ -8,12 +9,12 @@ export class Return extends Instruction{
         super(line, column);
     }
 
-    public execute(environment : Environment) {
+    public execute(environment : Environment):Retorno{
         if(this.expr != null){
             const value = this.expr.execute(environment);
-            return {line : this.line, column: this.column, type : 'Return', value : value};
+            return {value:value, type : Type.RETURN};
         }else{
-            return {line : this.line, column: this.column, type : 'Return', value : null};
+            return {value:null, type : Type.RETURN};
         }
     }
 }

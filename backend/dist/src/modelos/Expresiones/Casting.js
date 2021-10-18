@@ -29,32 +29,35 @@ var Casting = /** @class */ (function (_super) {
     }
     Casting.prototype.execute = function (environment) {
         var exptype = this.value.execute(environment).type;
-        var val = this.value.execute(environment).value;
         switch (this.changeTo) {
             case Retorno_1.Type.INT:
                 if (exptype == Retorno_1.Type.DOUBLE) {
+                    var val = this.value.execute(environment).value;
                     return { value: parseInt(val, 10), type: Retorno_1.Type.INT };
                 }
                 else if (exptype == Retorno_1.Type.CHAR) {
-                    return { value: parseInt(String.fromCharCode(val), 10), type: Retorno_1.Type.INT };
+                    var val = this.value.execute(environment).value;
+                    return { value: val, type: Retorno_1.Type.INT };
                 }
                 else {
                     throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE PUEDE REALIZAR EL CASTING DEL TIPO " + exptype + " AL TIPO " + this.changeTo);
                 }
             case Retorno_1.Type.DOUBLE:
                 if (exptype == Retorno_1.Type.INT) {
-                    return { value: parseFloat(val), type: Retorno_1.Type.DOUBLE };
+                    var val = this.value.execute(environment).value;
+                    return { value: parseFloat(val.toString()).toFixed(2), type: Retorno_1.Type.DOUBLE };
                 }
                 else if (exptype == Retorno_1.Type.CHAR) {
-                    var ent = parseInt(val, 10);
-                    return { value: parseFloat(String.fromCharCode(ent)), type: Retorno_1.Type.DOUBLE };
+                    var val = this.value.execute(environment).value;
+                    return { value: parseFloat(val.toString()).toFixed(2), type: Retorno_1.Type.DOUBLE };
                 }
                 else {
                     throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE PUEDE REALIZAR EL CASTING DEL TIPO " + exptype + " AL TIPO " + this.changeTo);
                 }
             case Retorno_1.Type.CHAR:
                 if (exptype == Retorno_1.Type.INT) {
-                    return { value: parseInt(val.CharCodeAt(0), 10), type: Retorno_1.Type.CHAR };
+                    var val = this.value.execute(environment).value;
+                    return { value: String.fromCharCode(val), type: Retorno_1.Type.CHAR };
                 }
                 else {
                     throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE PUEDE REALIZAR EL CASTING DEL TIPO " + exptype + " AL TIPO " + this.changeTo);

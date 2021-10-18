@@ -15,20 +15,20 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NewList = void 0;
-var Expresiones_1 = require("../Abstract/Expresiones");
-var List_1 = require("../Symbol/List");
-var NewList = /** @class */ (function (_super) {
-    __extends(NewList, _super);
-    function NewList(type, line, column) {
+exports.Case = void 0;
+var Instrucciones_1 = require("../Abstract/Instrucciones");
+var Case = /** @class */ (function (_super) {
+    __extends(Case, _super);
+    function Case(exp, code, line, column) {
         var _this = _super.call(this, line, column) || this;
-        _this.type = type;
+        _this.exp = exp;
+        _this.code = code;
         return _this;
     }
-    NewList.prototype.execute = function (environment) {
-        var array = new List_1.List();
-        return { value: array, type: this.type };
+    Case.prototype.execute = function (environment) {
+        var _a;
+        return { exp: (_a = this.exp) === null || _a === void 0 ? void 0 : _a.execute(environment), ins: this.code.execute(environment) };
     };
-    return NewList;
-}(Expresiones_1.Expression));
-exports.NewList = NewList;
+    return Case;
+}(Instrucciones_1.Instruction));
+exports.Case = Case;

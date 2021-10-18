@@ -15,20 +15,20 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NewList = void 0;
-var Expresiones_1 = require("../Abstract/Expresiones");
-var List_1 = require("../Symbol/List");
-var NewList = /** @class */ (function (_super) {
-    __extends(NewList, _super);
-    function NewList(type, line, column) {
+exports.For = void 0;
+var Instrucciones_1 = require("../Abstract/Instrucciones");
+var For = /** @class */ (function (_super) {
+    __extends(For, _super);
+    function For(asignacion, condicion, incremento, statement, line, column) {
         var _this = _super.call(this, line, column) || this;
-        _this.type = type;
+        _this.asignacion = asignacion;
+        _this.condicion = condicion;
+        _this.incremento = incremento;
+        _this.statement = statement;
         return _this;
     }
-    NewList.prototype.execute = function (environment) {
-        var array = new List_1.List();
-        return { value: array, type: this.type };
+    For.prototype.execute = function () {
     };
-    return NewList;
-}(Expresiones_1.Expression));
-exports.NewList = NewList;
+    return For;
+}(Instrucciones_1.Instruction));
+exports.For = For;

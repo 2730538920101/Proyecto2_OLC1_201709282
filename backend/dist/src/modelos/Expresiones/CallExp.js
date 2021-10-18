@@ -46,9 +46,9 @@ var CallExp = /** @class */ (function (_super) {
         switch (this.type) {
             case TypeCallExp.DECLARED:
                 var func = environment.getFuncion(this.id);
-                if (func != undefined) {
-                    if (this.expresiones.length != (func === null || func === void 0 ? void 0 : func.parametros.length)) {
-                        var newEnv = new Enviorment_1.Environment(environment.getGlobal());
+                if (func != undefined || func != null) {
+                    var newEnv = new Enviorment_1.Environment(environment.getGlobal());
+                    if (this.expresiones.length == func.parametros.length) {
                         for (var i = 0; i < this.expresiones.length; i++) {
                             var value_1 = this.expresiones[i].execute(environment);
                             var param = func.parametros[i].execute(environment);
@@ -60,7 +60,12 @@ var CallExp = /** @class */ (function (_super) {
                             }
                         }
                         var value = func.statment.execute(newEnv);
-                        return value.value;
+                        if (value != undefined) {
+                            return value.value;
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION QUE ESTA LLAMANDO NO ESTA RETORNANDO EL VALOR");
+                        }
                     }
                     else {
                         throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION QUE ESTA LLAMANDO NO TIENE LA MISMA CANTIDAD DE PARAMETROS INGRESADOS");
@@ -73,7 +78,15 @@ var CallExp = /** @class */ (function (_super) {
                 var lengthval = this.expresiones[0].execute(environment);
                 if (this.expresiones.length == 1) {
                     if (lengthval.type == Retorno_1.Type.ARRAY || lengthval.type == Retorno_1.Type.LIST || lengthval.type == Retorno_1.Type.STRING) {
-                        return lengthval.value.lenght;
+                        return { value: lengthval.value.toString().length, type: Retorno_1.Type.INT };
+                    }
+                    else if (lengthval.type == Retorno_1.Type.RETURN) {
+                        if (lengthval.value.type == Retorno_1.Type.ARRAY || lengthval.value.type == Retorno_1.Type.LIST || lengthval.value.type == Retorno_1.Type.STRING) {
+                            return { value: lengthval.value.value.toString().length, type: Retorno_1.Type.INT };
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION LENGTH SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING, DYNAMIC LIST O ARRAY");
+                        }
                     }
                     else {
                         throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION LENGTH SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING, DYNAMIC LIST O ARRAY");
@@ -86,7 +99,15 @@ var CallExp = /** @class */ (function (_super) {
                 var roundval = this.expresiones[0].execute(environment);
                 if (this.expresiones.length == 1) {
                     if (roundval.type == Retorno_1.Type.DOUBLE) {
-                        return Math.round(roundval.value);
+                        return { value: Math.round(roundval.value), type: Retorno_1.Type.INT };
+                    }
+                    else if (roundval.type == Retorno_1.Type.RETURN) {
+                        if (roundval.value.type == Retorno_1.Type.DOUBLE) {
+                            return { value: Math.round(roundval.value.value), type: Retorno_1.Type.INT };
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION ROUND SOLO PUEDE RECIBIR PARAMETROS DE TIPO DOUBLE");
+                        }
                     }
                     else {
                         throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION ROUND SOLO PUEDE RECIBIR PARAMETROS DE TIPO DOUBLE");
@@ -99,7 +120,15 @@ var CallExp = /** @class */ (function (_super) {
                 var tochararrayval = this.expresiones[0].execute(environment);
                 if (this.expresiones.length == 1) {
                     if (tochararrayval.type == Retorno_1.Type.STRING) {
-                        return tochararrayval.value.split('');
+                        return { value: tochararrayval.value.split(''), type: Retorno_1.Type.CHAR };
+                    }
+                    else if (tochararrayval.type == Retorno_1.Type.RETURN) {
+                        if (tochararrayval.value.type == Retorno_1.Type.STRING) {
+                            return { value: tochararrayval.value.value.split(''), type: Retorno_1.Type.CHAR };
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TOCHARARRAY SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING");
+                        }
                     }
                     else {
                         throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TOCHARARRAY SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING");
@@ -112,7 +141,15 @@ var CallExp = /** @class */ (function (_super) {
                 var tolowerval = this.expresiones[0].execute(environment);
                 if (this.expresiones.length == 1) {
                     if (tolowerval.type == Retorno_1.Type.STRING) {
-                        return tolowerval.value.toLowerCase();
+                        return { value: tolowerval.value.toLowerCase(), type: Retorno_1.Type.STRING };
+                    }
+                    else if (tolowerval.type == Retorno_1.Type.RETURN) {
+                        if (tolowerval.value.type == Retorno_1.Type.STRING) {
+                            return { value: tolowerval.value.value.toLowerCase(), type: Retorno_1.Type.STRING };
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TOLOWER SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING");
+                        }
                     }
                     else {
                         throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TOLOWER SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING");
@@ -125,7 +162,15 @@ var CallExp = /** @class */ (function (_super) {
                 var toupperval = this.expresiones[0].execute(environment);
                 if (this.expresiones.length == 1) {
                     if (toupperval.type == Retorno_1.Type.STRING) {
-                        return toupperval.value.toUpperCase();
+                        return { value: toupperval.value.toUpperCase(), type: Retorno_1.Type.STRING };
+                    }
+                    else if (toupperval.type == Retorno_1.Type.RETURN) {
+                        if (toupperval.value.type == Retorno_1.Type.STRING) {
+                            return { value: toupperval.value.value.toUpperCase(), type: Retorno_1.Type.STRING };
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TOUPPER SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING");
+                        }
                     }
                     else {
                         throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TOUPPER SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING");
@@ -138,7 +183,15 @@ var CallExp = /** @class */ (function (_super) {
                 var tostringval = this.expresiones[0].execute(environment);
                 if (this.expresiones.length == 1) {
                     if (tostringval.type == Retorno_1.Type.INT || tostringval.type == Retorno_1.Type.DOUBLE) {
-                        return tostringval.value.toString();
+                        return { value: tostringval.value.toString(), type: Retorno_1.Type.STRING };
+                    }
+                    else if (tostringval.type == Retorno_1.Type.RETURN) {
+                        if (tostringval.value.type == Retorno_1.Type.INT || tostringval.value.type == Retorno_1.Type.DOUBLE) {
+                            return { value: tostringval.value.value.toString(), type: Retorno_1.Type.STRING };
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TOSTRING SOLO PUEDE RECIBIR PARAMETROS DE TIPO INT O DOUBLE");
+                        }
                     }
                     else {
                         throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TOSTRING SOLO PUEDE RECIBIR PARAMETROS DE TIPO INT O DOUBLE");
@@ -151,7 +204,15 @@ var CallExp = /** @class */ (function (_super) {
                 var truncateval = this.expresiones[0].execute(environment);
                 if (this.expresiones.length == 1) {
                     if (truncateval.type == Retorno_1.Type.DOUBLE) {
-                        return Math.trunc(truncateval.value);
+                        return { value: Math.trunc(truncateval.value), type: Retorno_1.Type.INT };
+                    }
+                    else if (truncateval.type == Retorno_1.Type.RETURN) {
+                        if (truncateval.value.type == Retorno_1.Type.DOUBLE) {
+                            return { value: Math.trunc(truncateval.value.value), type: Retorno_1.Type.INT };
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TRUNCATE SOLO PUEDE RECIBIR PARAMETROS DE TIPO DOUBLE");
+                        }
                     }
                     else {
                         throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TRUNCATE SOLO PUEDE RECIBIR PARAMETROS DE TIPO DOUBLE");
@@ -163,7 +224,12 @@ var CallExp = /** @class */ (function (_super) {
             case TypeCallExp.TYPEOF:
                 var typeofval = this.expresiones[0].execute(environment);
                 if (this.expresiones.length == 1) {
-                    return typeofval.type.toString();
+                    if (typeofval.type != Retorno_1.Type.RETURN) {
+                        return { value: typeofval.type.toString(), type: Retorno_1.Type.STRING };
+                    }
+                    else {
+                        return { value: typeofval.value.type.toString(), type: Retorno_1.Type.STRING };
+                    }
                 }
                 else {
                     throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TYPEOF SOLO PUEDE RECIBIR UN PARAMETRO");

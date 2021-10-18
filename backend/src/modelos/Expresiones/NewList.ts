@@ -11,6 +11,6 @@ export class NewList extends Expression {
 
     public execute(environment: Environment): Retorno {
         const array = new List();
-        return { value: array, type: Type.LIST };
+        return { value: array, type: this.type };
     }
 }

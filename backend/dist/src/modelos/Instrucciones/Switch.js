@@ -15,20 +15,27 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NewList = void 0;
-var Expresiones_1 = require("../Abstract/Expresiones");
-var List_1 = require("../Symbol/List");
-var NewList = /** @class */ (function (_super) {
-    __extends(NewList, _super);
-    function NewList(type, line, column) {
+exports.Switch = void 0;
+var Instrucciones_1 = require("../Abstract/Instrucciones");
+var Switch = /** @class */ (function (_super) {
+    __extends(Switch, _super);
+    function Switch(cambio, casos, line, column) {
         var _this = _super.call(this, line, column) || this;
-        _this.type = type;
+        _this.cambio = cambio;
+        _this.casos = casos;
         return _this;
     }
-    NewList.prototype.execute = function (environment) {
-        var array = new List_1.List();
-        return { value: array, type: this.type };
+    Switch.prototype.execute = function (environment) {
+        for (var i = 0; i < this.casos.length; i++) {
+            var caso = this.casos[i].execute(environment);
+            if (this.cambio.execute(environment) == caso) {
+                return caso;
+            }
+            else if (caso == null) {
+                return caso;
+            }
+        }
     };
-    return NewList;
-}(Expresiones_1.Expression));
-exports.NewList = NewList;
+    return Switch;
+}(Instrucciones_1.Instruction));
+exports.Switch = Switch;

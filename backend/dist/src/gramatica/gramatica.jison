@@ -25,6 +25,14 @@
     const { Break } = require('../modelos/Instrucciones/Break');
     const { Continue } = require('../modelos/Instrucciones/Continue');
     const { Return } = require('../modelos/Instrucciones/Return');
+    const { If } = require('../modelos/Instrucciones/If');
+    const { While } = require('../modelos/Instrucciones/While');
+    const { DoWhile } = require('../modelos/Instrucciones/DoWhile');
+    const { Case} = require('../modelos/Instrucciones/Case');
+    const { Switch } = require('../modelos/Instrucciones/Switch');
+    const { For } = require('../modelos/Instrucciones/For');
+    const { errores } = require('../modelos/Errores/ErrorList'); 
+    const { MiError, TypeError} = require('../modelos/Errores/Error');
     console.log("SE COMPILO EL ARCHIVO .JISON");
 %}
 
@@ -154,6 +162,9 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 
 <<EOF>>		            return 'EOF'
 
+//MANEJO DE ERRORES LEXICOS
+.               {errores.push(new MiError(yylloc.first_line, yylloc.first_column ,TypeError.LEXICO ,"ERROR LEXICO EN"+yytext));}
+
 /lex
 
 //DEFINIR PRECEDENCIA DE LOS OPERADORES
@@ -186,8 +197,13 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 //NODO INICIAL
 INICIO
     :ENTORNO_GLOBAL EOF {
-        console.log('ANALISIS EXITOSO');
-        return $1;
+        try{
+            console.log('ANALISIS EXITOSO');
+            return $1;
+        }catch(e){
+            console.log(e);
+        }
+        
     }
     ;
 
@@ -201,20 +217,24 @@ ENTORNO_GLOBAL
         $1=[$1];
         $$ = $1;
     }
+    /*|error { 
+        const er = new MiError(@1.first_line, @1.first_column, TypeError.SINTACTICO, "ERROR SINTACTICO EN: "+ yytext);
+        errores.push(er);
+    }*/
     ;
 
 //INSTRUCCIONES GLOBALES
 GLOBAL    
     :DECLARACION_VARIABLE{
-        console.log($1);
+        //console.log($1);
         $$=$1;
     }
     |DECLARACION_FUNCIONES{
-        console.log($1);
+        //console.log($1);
         $$=$1;
     }
     |INICIAR_SISTEMA{
-        console.log($1);
+        //console.log($1);
         $$=$1
     }
     ;
@@ -396,70 +416,80 @@ SENTENCIAS
    
 //SENTENCIA PARA EL CICLO IF Y TODAS SUS VARIANTES
 GENERARIF
-    :'if' '(' EXPRESION ')' ENTORNO
-    |'if' '(' EXPRESION ')' ENTORNO GENERARELSE
-    |'if' '(' EXPRESION ')' ENTORNO GENERARELSEIF
+    :'if' '(' EXPRESION ')' ENTORNO GENERARELSE{
+        $$ = new If($3, $5, $6, @1.first_line, @1.first_column);
+    }
     ;
 
 //SENTENCIA PARA ELSE
 GENERARELSE
-    :'else' ENTORNO
-    ;
-
-//SENTENCIA PARA ELSE IF
-GENERARELSEIF
-    :'else' GENERARIF 
+    :'else' ENTORNO{
+        $$ = $2;
+    }
+    |'else' GENERARIF{
+        $$ = $2;
+    } 
+    |/*epsilon*/{
+        $$ = null;
+    }
     ;
 
 //SENTENCIA PARA SWITCH
 GENERARSWITCH
-    :'switch' '(' EXPRESION ')' ENTORNO
+    :'switch' '(' EXPRESION ')' ENTORNO_SWITCH{
+        $$ = new Switch($3, $5, @1.first_line, @1.first_column);
+    }
     ;
 
 //LISTA DE CASOS DEL SWITCH
 CASES_LIST
     :CASES_LIST 'case' EXPRESION ':' INSTRUCCIONES{
-        $1.push($5);
+        let case1 =  new Case($3, $5, @1.first_line, @1.first_column);
+        $1.push(case1);
         $$ = $1;
     }
     |'case' EXPRESION ':' INSTRUCCIONES{
-        $$ = [$4];
+        let case2 =  new Case($2, $4, @1.first_line, @1.first_column);
+        $$ = [case2];
     }
     ;
 
 //DEFAULT PARA EL SWITCH
 DEFAULT
     :'default' ':' INSTRUCCIONES{
-        $$ = $3;
+        let case3 =  new Case(null, $3, @1.first_line, @1.first_column);
+        $$ = case3;
     }
     ;
 
 //SENTENCIA PARA WHILE
 GENERARWHILE
-    :'while' '(' EXPRESION ')' ENTORNO
+    :'while' '(' EXPRESION ')' ENTORNO{
+        $$ = new While($3, $5, @1.first_line, @1.first_column);
+    }
     ;
 
 //SENTENCIA PARA FOR
 GENERARFOR
-    :'for' '(' DECLARACION_VARIABLE EXPRESION ';' ASIGNACION ')' ENTORNO
-    |'for' '(' ASIGNACION ';' EXPRESION ';' ASIGNACION ')' ENTORNO
+    :'for' '(' DECLARACION_VARIABLE EXPRESION ';' ASIGNACION ')' ENTORNO{
+        $$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column);
+    }
+    |'for' '(' ASIGNACION ';' EXPRESION ';' ASIGNACION ')' ENTORNO{
+        $$ = new For($4, $5, $7, $9, @1.first_line, @1.first_column);
+    }
     ;
 
 //SENTENCIA PARA DO WHILE
 GENERARDOWHILE
-    :'do' ENTORNO 'while' '(' EXPRESION ')' ';'
+    :'do' ENTORNO 'while' '(' EXPRESION ')' ';'{
+        $$ = new DoWhile($5, $2, @1.first_line, @1.first_column);
+    }
     ;
 
-//ENTORNO PARA EL ENCAPSULAMIENTO DE INSTRUCCIONES EN DIFERENTES AMBITOS
-ENTORNO
-    :'{' '}'{
-         $$ = new Statement(new Array(), @1.first_line, @1.first_column);
-    }
-    |'{' INSTRUCCIONES '}'{
-         $$ = new Statement($2, @1.first_line, @1.first_column);
-    }
-    |'{' CASES_LIST DEFAULT '}'{
-        const entlist = [];
+//ENTORNO PARA EL SWITCH
+ENTORNO_SWITCH
+    :'{' CASES_LIST DEFAULT '}'{
+        let entlist = [];
         $2.forEach((bloque)=>{
             let env = new Statement(bloque, @1.first_line, @1.first_column);
             entlist.push(env);    
@@ -470,7 +500,7 @@ ENTORNO
         $$ = entlist;
     }
     |'{' CASES_LIST '}'{
-        const entlist2 = [];
+        let entlist2 = [];
         $2.forEach((bloque)=>{
             let env = new Statement(bloque, @1.first_line, @1.first_column);
             entlist2.push(env);    
@@ -479,11 +509,21 @@ ENTORNO
         $$ = entlist2;
     }
     |'{' DEFAULT '}'{
-        const entlist3 = [];
+        let entlist3 = [];
         let env3 = new Statement($2, @1.first_line, @1.first_column);
         entlist3.push(env3);
         //console.log(entlist3)
         $$ = entlist3;
+    }
+    ;
+
+//ENTORNO PARA EL ENCAPSULAMIENTO DE INSTRUCCIONES EN DIFERENTES AMBITOS
+ENTORNO
+    :'{' '}'{
+         $$ = new Statement(new Array(), @1.first_line, @1.first_column);
+    }
+    |'{' INSTRUCCIONES '}'{
+         $$ = new Statement($2, @1.first_line, @1.first_column);
     }
     ;
 
@@ -622,22 +662,22 @@ LISTA_ID
 //TIPOS DE DATO
 TIPO_DATO
     :'t_double'{
-        $$ = $1;
+        $$ = $1.toLowerCase();
     }
     |'t_char'{
-        $$ = $1;
+        $$ = $1.toLowerCase();
     }
     |'t_int'{
-        $$ = $1;
+        $$ = $1.toLowerCase();
     }
     |'t_string'{
-        $$ = $1;
+        $$ = $1.toLowerCase();
     }
     |'t_boolean'{
-        $$ = $1;
+        $$ = $1.toLowerCase();
     }
     |'void'{
-        $$ = $1;
+        $$ = $1.toLowerCase();
     }
     ;
 
@@ -662,7 +702,7 @@ EXPRESION
         if($2 == "int"){
             $$ = new Casting(0, $4, @1.first_line, @1.first_column);
         }else if($2 == "double"){
-            $$ = new Casting(2, $4, @1.first_line, @1.first_column);
+            $$ = new Casting(1, $4, @1.first_line, @1.first_column);
         }else if($2 == "char"){
             $$ = new Casting(3, $4, @1.first_line, @1.first_column);
         }else{
@@ -734,10 +774,10 @@ EXPMAT
         $$ = new Arithmetic($1, $3, ArithmeticOption.RESTA, @1.first_line, @1.first_column);
     }
     |EXPRESION '/' EXPRESION{
-        $$ = new Arithmetic($1, $3, ArithmeticOption.MULTIPLICACION, @1.first_line, @1.first_column);
+        $$ = new Arithmetic($1, $3, ArithmeticOption.DIVISION, @1.first_line, @1.first_column);
     }
     |EXPRESION '*' EXPRESION{
-        $$ = new Arithmetic($1, $3, ArithmeticOption.DIVISION, @1.first_line, @1.first_column);
+        $$ = new Arithmetic($1, $3, ArithmeticOption.MULTIPLICACION, @1.first_line, @1.first_column);
     }
     |EXPRESION 'ˆ' EXPRESION{
         $$ = new Arithmetic($1, $3, ArithmeticOption.POTENCIA, @1.first_line, @1.first_column);

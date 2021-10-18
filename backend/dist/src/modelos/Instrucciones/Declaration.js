@@ -34,7 +34,7 @@ var Declaration = /** @class */ (function (_super) {
                 this.asignacion.execute(environment);
             }
             else {
-                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE DECLARAR LA VARIABLE PORQUE EL TIPO DE LA EXPRESION ASIGNADA NO COINCIDE CON EL TIPO DE LA DECLARACION");
+                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE PUEDE DECLARAR LA VARIABLE PORQUE EL TIPO DE LA EXPRESION ASIGNADA NO COINCIDE CON EL TIPO DE LA DECLARACION");
             }
         }
     };

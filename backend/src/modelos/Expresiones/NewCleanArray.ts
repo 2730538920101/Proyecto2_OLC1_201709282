@@ -13,11 +13,11 @@ export class NewCleanArray extends Expression {
 
     public execute(environment: Environment): Retorno {
         const array = new Array();
-        let index = 0;
+        
         const value = this.expr.execute(environment);
         if(value.type == Type.INT){
             for(let i=0; i< value.value; i++){
-                array.setValue(index++, new Symbol(0, '', value.type));    
+                array.setValue(i, new Symbol(0, '', this.type));    
             }
             return { value: array, type: Type.ARRAY };
         }else{

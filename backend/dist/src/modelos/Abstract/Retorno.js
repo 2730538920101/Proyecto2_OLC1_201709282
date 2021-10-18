@@ -11,4 +11,5 @@ var Type;
     Type[Type["NULL"] = 5] = "NULL";
     Type[Type["ARRAY"] = 6] = "ARRAY";
     Type[Type["LIST"] = 7] = "LIST";
+    Type[Type["RETURN"] = 8] = "RETURN";
 })(Type = exports.Type || (exports.Type = {}));

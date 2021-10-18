@@ -34,16 +34,47 @@ var Call = /** @class */ (function (_super) {
         _this.id = id;
         _this.expresiones = expresiones;
         _this.type = type;
+        _this.contadorstart = 0;
         return _this;
     }
     Call.prototype.execute = function (environment) {
-        var contInicio = 0;
         switch (this.type) {
+            case TypeCall.START:
+                this.contadorstart++;
+                if (this.column <= 1) {
+                    var start = environment.getFuncion(this.id);
+                    if (start != undefined || start != null) {
+                        var newEnv = new Enviorment_1.Environment(environment.getGlobal());
+                        if (start.parametros.length == this.expresiones.length) {
+                            for (var i = 0; i < this.expresiones.length; i++) {
+                                var value = this.expresiones[i].execute(environment);
+                                var param = start.parametros[i].execute(environment);
+                                if (value.type == param.type) {
+                                    newEnv.guardar(param.value, value.value, value.type);
+                                }
+                                else {
+                                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LOS PARAMETROS INGRESADOS EN LA LLAMADA NO SON DEL MISMO TIPO QUE EN LA DECLARACION");
+                                }
+                            }
+                            start.statment.execute(newEnv);
+                            break;
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION NO TIENE EL MISMO NUMERO DE PARAMETROS QUE LOS DATOS INGRESADOS");
+                        }
+                    }
+                    else {
+                        throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION QUE ESTA LLAMANDO NO HA SIDO DECLARADA");
+                    }
+                }
+                else {
+                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION START SOLO SE PUEDE EJECUTAR UNA VEZ");
+                }
             case TypeCall.DECLARED:
                 var func = environment.getFuncion(this.id);
-                if (func != undefined) {
-                    if (this.expresiones.length != (func === null || func === void 0 ? void 0 : func.parametros.length)) {
-                        var newEnv = new Enviorment_1.Environment(environment.getGlobal());
+                if (func != undefined || func != null) {
+                    var newEnv = new Enviorment_1.Environment(environment.getGlobal());
+                    if (func.parametros.length == this.expresiones.length) {
                         for (var i = 0; i < this.expresiones.length; i++) {
                             var value = this.expresiones[i].execute(environment);
                             var param = func.parametros[i].execute(environment);
@@ -58,46 +89,15 @@ var Call = /** @class */ (function (_super) {
                         break;
                     }
                     else {
-                        throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION QUE ESTA LLAMANDO NO TIENE LA MISMA CANTIDAD DE PARAMETROS INGRESADOS");
+                        throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION NO TIENE EL MISMO NUMERO DE PARAMETROS QUE LOS DATOS INGRESADOS");
                     }
                 }
                 else {
                     throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION QUE ESTA LLAMANDO NO HA SIDO DECLARADA");
                 }
-            case TypeCall.START:
-                contInicio++;
-                if (contInicio < 1) {
-                    var func2 = environment.getFuncion(this.id);
-                    if (func2 != undefined) {
-                        if (this.expresiones.length != (func2 === null || func2 === void 0 ? void 0 : func2.parametros.length)) {
-                            var newEnv = new Enviorment_1.Environment(environment.getGlobal());
-                            for (var i = 0; i < this.expresiones.length; i++) {
-                                var value = this.expresiones[i].execute(environment);
-                                var param = func2.parametros[i].execute(environment);
-                                if (value.type == param.type) {
-                                    newEnv.guardar(param.value, value.value, value.type);
-                                }
-                                else {
-                                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LOS PARAMETROS INGRESADOS EN LA LLAMADA NO SON DEL MISMO TIPO QUE EN LA DECLARACION");
-                                }
-                            }
-                            func2.statment.execute(newEnv);
-                            break;
-                        }
-                        else {
-                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION QUE ESTA LLAMANDO NO TIENE LA MISMA CANTIDAD DE PARAMETROS INGRESADOS");
-                        }
-                    }
-                    else {
-                        throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION QUE ESTA LLAMANDO NO HA SIDO DECLARADA");
-                    }
-                }
-                else {
-                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "SOLO PUEDE INICIAR EL SISTEMA UNA VEZ POR EJECUCION");
-                }
             case TypeCall.WRITELINE:
+                var imprimir = this.expresiones[0].execute(environment).value;
                 if (this.expresiones.length == 1) {
-                    var imprimir = this.expresiones[0].execute(environment);
                     console.log(imprimir);
                     break;
                 }

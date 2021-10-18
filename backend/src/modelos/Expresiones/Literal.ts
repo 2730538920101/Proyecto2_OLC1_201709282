@@ -9,22 +9,16 @@ export class Literal extends Expression{
 
     public execute() : Retorno{
         if(this.type == 0){
-            console.log(this.value);
             return {value : Number(this.value), type : Type.INT};
         }else if(this.type == 1){
-            console.log(this.value);
             return {value : Number(this.value), type : Type.DOUBLE};
         }else if(this.type == 2){
-            console.log(this.value);
             return {value : this.value.toString().toLowerCase(), type : Type.BOOLEAN};
         }else if(this.type == 3){
-            console.log(this.value);
             return {value : this.value.charCodeAt(0), type : Type.CHAR};
         }else if(this.type == 4){
-            console.log(this.value);
             return {value : this.value, type : Type.STRING};
         }else{
-            console.log(this.value);
             return {value : null , type : Type.NULL};
         }
     }

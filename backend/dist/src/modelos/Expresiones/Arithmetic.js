@@ -41,15 +41,9 @@ var Arithmetic = /** @class */ (function (_super) {
     Arithmetic.prototype.execute = function (environment) {
         var leftValue = this.left.execute(environment);
         var rightValue = this.right.execute(environment);
-        var dominanteSuma = this.DominanteSuma(leftValue.type, rightValue.type);
-        var dominanteResta = this.DominanteResta(leftValue.type, rightValue.type);
-        var dominanteMultiplicacion = this.DominanteMultiplicacion(leftValue.type, rightValue.type);
-        var dominanteDivision = this.DominanteDivision(leftValue.type, rightValue.type);
-        var dominantePotencia = this.DominantePotencia(leftValue.type, rightValue.type);
-        var dominanteModulo = this.DominanteModulo(leftValue.type, rightValue.type);
-        var dominanteUnario = this.DominanteUnario(rightValue.type);
         var result = { value: null, type: Retorno_1.Type.NULL };
         if (this.type == ArithmeticOption.SUMA) {
+            var dominanteSuma = this.DominanteSuma(leftValue.type, rightValue.type);
             if (dominanteSuma == Retorno_1.Type.STRING) {
                 result = { value: (leftValue.value.toString() + rightValue.value.toString()), type: Retorno_1.Type.STRING };
             }
@@ -64,6 +58,7 @@ var Arithmetic = /** @class */ (function (_super) {
             }
         }
         else if (this.type == ArithmeticOption.RESTA) {
+            var dominanteResta = this.DominanteResta(leftValue.type, rightValue.type);
             if (dominanteResta == Retorno_1.Type.INT) {
                 result = { value: (leftValue.value - rightValue.value), type: Retorno_1.Type.INT };
             }
@@ -75,6 +70,7 @@ var Arithmetic = /** @class */ (function (_super) {
             }
         }
         else if (this.type == ArithmeticOption.MULTIPLICACION) {
+            var dominanteMultiplicacion = this.DominanteMultiplicacion(leftValue.type, rightValue.type);
             if (dominanteMultiplicacion == Retorno_1.Type.INT) {
                 result = { value: (leftValue.value * rightValue.value), type: Retorno_1.Type.INT };
             }
@@ -86,15 +82,16 @@ var Arithmetic = /** @class */ (function (_super) {
             }
         }
         else if (this.type == ArithmeticOption.DIVISION) {
+            var dominanteDivision = this.DominanteDivision(leftValue.type, rightValue.type);
             if (rightValue.value == 0) {
                 throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO ES POSIBLE DIVIDIR UN NUMERO ENTRE 0");
             }
             else {
                 if (dominanteDivision == Retorno_1.Type.INT) {
-                    result = { value: (leftValue.value - rightValue.value), type: Retorno_1.Type.INT };
+                    result = { value: (leftValue.value / rightValue.value), type: Retorno_1.Type.INT };
                 }
                 else if (dominanteDivision == Retorno_1.Type.DOUBLE) {
-                    result = { value: (leftValue.value - rightValue.value), type: Retorno_1.Type.DOUBLE };
+                    result = { value: (leftValue.value / rightValue.value), type: Retorno_1.Type.DOUBLE };
                 }
                 else {
                     throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO ES POSIBLE DIVIDIR VALORES DE TIPO: " + leftValue.type + " y " + rightValue.type);
@@ -102,6 +99,7 @@ var Arithmetic = /** @class */ (function (_super) {
             }
         }
         else if (this.type == ArithmeticOption.POTENCIA) {
+            var dominantePotencia = this.DominantePotencia(leftValue.type, rightValue.type);
             if (dominantePotencia == Retorno_1.Type.INT) {
                 result = { value: (Math.pow(leftValue.value, rightValue.value)), type: Retorno_1.Type.INT };
             }
@@ -113,6 +111,7 @@ var Arithmetic = /** @class */ (function (_super) {
             }
         }
         else if (this.type == ArithmeticOption.MODULO) {
+            var dominanteModulo = this.DominanteModulo(leftValue.type, rightValue.type);
             if (dominanteModulo == Retorno_1.Type.INT) {
                 result = { value: (leftValue.value % rightValue.value), type: Retorno_1.Type.INT };
             }
@@ -124,6 +123,7 @@ var Arithmetic = /** @class */ (function (_super) {
             }
         }
         else if (this.type == ArithmeticOption.UNARIO) {
+            var dominanteUnario = this.DominanteUnario(rightValue.type);
             if (dominanteUnario == Retorno_1.Type.INT) {
                 result = { value: (leftValue.value - rightValue.value), type: Retorno_1.Type.INT };
             }

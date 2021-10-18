@@ -26,7 +26,7 @@ var Params = /** @class */ (function (_super) {
         return _this;
     }
     Params.prototype.execute = function (environment) {
-        environment.guardar(this.id, null, this.type);
+        environment.guardar(this.id, "", this.type);
         return { value: this.id, type: this.type };
     };
     return Params;

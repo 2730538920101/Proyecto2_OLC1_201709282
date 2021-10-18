@@ -21,16 +21,10 @@ export class Arithmetic extends Expression{
     public execute(environment:Environment):Retorno{
         const leftValue = this.left.execute(environment);
         const rightValue = this.right.execute(environment);
-        const dominanteSuma = this.DominanteSuma(leftValue.type, rightValue.type);
-        const dominanteResta = this.DominanteResta(leftValue.type, rightValue.type);
-        const dominanteMultiplicacion = this.DominanteMultiplicacion(leftValue.type, rightValue.type);
-        const dominanteDivision = this.DominanteDivision(leftValue.type, rightValue.type);
-        const dominantePotencia = this.DominantePotencia(leftValue.type, rightValue.type);
-        const dominanteModulo = this.DominanteModulo(leftValue.type, rightValue.type);
-        const dominanteUnario = this.DominanteUnario(rightValue.type);
         let result:Retorno ={value:null,type:Type.NULL};
         
         if(this.type == ArithmeticOption.SUMA){
+            const dominanteSuma = this.DominanteSuma(leftValue.type, rightValue.type);
             if(dominanteSuma == Type.STRING){
                 result = {value:(leftValue.value.toString() + rightValue.value.toString()), type: Type.STRING};
             }else if(dominanteSuma == Type.INT){
@@ -41,6 +35,7 @@ export class Arithmetic extends Expression{
                 throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO ES POSIBLE SUMAR VALORES DE TIPO: " + leftValue.type + " y " + rightValue.type);
             }
         }else if(this.type == ArithmeticOption.RESTA){
+            const dominanteResta = this.DominanteResta(leftValue.type, rightValue.type);
             if(dominanteResta == Type.INT){
                 result = {value:(leftValue.value - rightValue.value), type: Type.INT};
             }else if(dominanteResta == Type.DOUBLE){
@@ -49,6 +44,7 @@ export class Arithmetic extends Expression{
                 throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO ES POSIBLE RESTAR VALORES DE TIPO: " + leftValue.type + " y " + rightValue.type);
             }
         }else if(this.type == ArithmeticOption.MULTIPLICACION){
+            const dominanteMultiplicacion = this.DominanteMultiplicacion(leftValue.type, rightValue.type);
             if(dominanteMultiplicacion == Type.INT){
                 result = {value:(leftValue.value * rightValue.value), type: Type.INT};
             }else if(dominanteMultiplicacion == Type.DOUBLE){
@@ -57,18 +53,20 @@ export class Arithmetic extends Expression{
                 throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO ES POSIBLE MULTIPLICAR VALORES DE TIPO: " + leftValue.type + " y " + rightValue.type);
             }
         }else if(this.type == ArithmeticOption.DIVISION){
+            const dominanteDivision = this.DominanteDivision(leftValue.type, rightValue.type);
             if(rightValue.value == 0){
                 throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO ES POSIBLE DIVIDIR UN NUMERO ENTRE 0");
             }else{
                 if(dominanteDivision == Type.INT){
-                    result = {value:(leftValue.value - rightValue.value), type: Type.INT};
+                    result = {value:(leftValue.value / rightValue.value), type: Type.INT};
                 }else if(dominanteDivision == Type.DOUBLE){
-                    result = {value:(leftValue.value - rightValue.value), type: Type.DOUBLE};
+                    result = {value:(leftValue.value / rightValue.value), type: Type.DOUBLE};
                 }else{
                     throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO ES POSIBLE DIVIDIR VALORES DE TIPO: " + leftValue.type + " y " + rightValue.type);
                 }
             }
         }else if(this.type == ArithmeticOption.POTENCIA){
+            const dominantePotencia = this.DominantePotencia(leftValue.type, rightValue.type);
             if(dominantePotencia == Type.INT){
                 result = {value:(leftValue.value ** rightValue.value), type: Type.INT};
             }else if(dominantePotencia == Type.DOUBLE){
@@ -77,6 +75,7 @@ export class Arithmetic extends Expression{
                 throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO ES POSIBLE ELEVAR A LA POTENCIA LOS VALORES DE TIPO: " + leftValue.type + " y " + rightValue.type);
             }
         }else if(this.type == ArithmeticOption.MODULO){
+            const dominanteModulo = this.DominanteModulo(leftValue.type, rightValue.type);
             if(dominanteModulo == Type.INT){
                 result = {value:(leftValue.value % rightValue.value), type: Type.INT};
             }else if(dominanteModulo == Type.DOUBLE){
@@ -85,6 +84,7 @@ export class Arithmetic extends Expression{
                 throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO ES POSIBLE CALCULAR EL MODULO DE VALORES DE TIPO: " + leftValue.type + " y " + rightValue.type);
             }
         }else if(this.type == ArithmeticOption.UNARIO){
+            const dominanteUnario = this.DominanteUnario(rightValue.type);
             if(dominanteUnario == Type.INT){
                 result = {value: (leftValue.value-rightValue.value), type: Type.INT};
             }else if(dominanteUnario == Type.DOUBLE){

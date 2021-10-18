@@ -31,11 +31,10 @@ var NewCleanArray = /** @class */ (function (_super) {
     }
     NewCleanArray.prototype.execute = function (environment) {
         var array = new Array_1.Array();
-        var index = 0;
         var value = this.expr.execute(environment);
         if (value.type == Retorno_1.Type.INT) {
             for (var i = 0; i < value.value; i++) {
-                array.setValue(index++, new Symbol_1.Symbol(0, '', value.type));
+                array.setValue(i, new Symbol_1.Symbol(0, '', this.type));
             }
             return { value: array, type: Retorno_1.Type.ARRAY };
         }

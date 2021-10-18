@@ -14,7 +14,7 @@ export class Declaration extends Instruction{
             if(tipo == this.type){
                 this.asignacion.execute(environment);
             }else{
-                throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO SE DECLARAR LA VARIABLE PORQUE EL TIPO DE LA EXPRESION ASIGNADA NO COINCIDE CON EL TIPO DE LA DECLARACION");
+                throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO SE PUEDE DECLARAR LA VARIABLE PORQUE EL TIPO DE LA EXPRESION ASIGNADA NO COINCIDE CON EL TIPO DE LA DECLARACION");
             }
         }
     }

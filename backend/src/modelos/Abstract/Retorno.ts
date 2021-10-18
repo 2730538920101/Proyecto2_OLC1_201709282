@@ -6,7 +6,8 @@ export enum Type{
     STRING = 4,
     NULL = 5,
     ARRAY = 6,
-    LIST = 7
+    LIST = 7,
+    RETURN = 8
 }
 
 export type Retorno ={

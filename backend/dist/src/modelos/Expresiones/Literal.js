@@ -28,27 +28,21 @@ var Literal = /** @class */ (function (_super) {
     }
     Literal.prototype.execute = function () {
         if (this.type == 0) {
-            console.log(this.value);
             return { value: Number(this.value), type: Retorno_1.Type.INT };
         }
         else if (this.type == 1) {
-            console.log(this.value);
             return { value: Number(this.value), type: Retorno_1.Type.DOUBLE };
         }
         else if (this.type == 2) {
-            console.log(this.value);
             return { value: this.value.toString().toLowerCase(), type: Retorno_1.Type.BOOLEAN };
         }
         else if (this.type == 3) {
-            console.log(this.value);
             return { value: this.value.charCodeAt(0), type: Retorno_1.Type.CHAR };
         }
         else if (this.type == 4) {
-            console.log(this.value);
             return { value: this.value, type: Retorno_1.Type.STRING };
         }
         else {
-            console.log(this.value);
             return { value: null, type: Retorno_1.Type.NULL };
         }
     };
