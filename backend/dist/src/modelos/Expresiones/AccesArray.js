@@ -28,19 +28,29 @@ var AccesArray = /** @class */ (function (_super) {
         return _this;
     }
     AccesArray.prototype.execute = function (environment) {
-        var anterior = this.anterior.execute(environment);
-        if (anterior.type != Retorno_1.Type.ARRAY) {
-            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO ES UN ARREGLO");
-        }
-        else {
-            var index = this.index.execute(environment);
-            if (index.type != Retorno_1.Type.INT) {
-                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "EL INDICE NO ES UN NUMERO");
+        var anterior = environment.getVar(this.anterior);
+        if (anterior != null || anterior != undefined) {
+            if (anterior.type != Retorno_1.Type.ARRAY) {
+                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO ES UN ARREGLO");
             }
             else {
-                var value = anterior.value.getValue(index.value);
-                return { type: value.type, value: value.valor };
+                var index = this.index.execute(environment);
+                if (index != null || index != undefined) {
+                    if (index.type != Retorno_1.Type.INT) {
+                        throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "EL INDICE NO ES UN NUMERO");
+                    }
+                    else {
+                        var valoractual = anterior.valor.getValue(index.value);
+                        return { value: valoractual.valor, type: valoractual.type };
+                    }
+                }
+                else {
+                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO HA ENVIADO EL INDICE CORRECTAMENTE");
+                }
             }
+        }
+        else {
+            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE HA DECLARADO EL ARREGLO");
         }
     };
     return AccesArray;

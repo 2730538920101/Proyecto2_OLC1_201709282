@@ -18,7 +18,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Declaration = void 0;
 var Instrucciones_1 = require("../Abstract/Instrucciones");
 var Error_1 = require("../Errores/Error");
-var Retorno_1 = require("../Abstract/Retorno");
 var Declaration = /** @class */ (function (_super) {
     __extends(Declaration, _super);
     function Declaration(type, asignacion, line, column) {
@@ -28,13 +27,24 @@ var Declaration = /** @class */ (function (_super) {
         return _this;
     }
     Declaration.prototype.execute = function (environment) {
-        if (this.type != Retorno_1.Type.NULL) {
+        try {
             var tipo = this.asignacion.getType(environment);
             if (tipo == this.type) {
                 this.asignacion.execute(environment);
             }
             else {
                 throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE PUEDE DECLARAR LA VARIABLE PORQUE EL TIPO DE LA EXPRESION ASIGNADA NO COINCIDE CON EL TIPO DE LA DECLARACION");
+            }
+        }
+        catch (e) {
+            for (var i = 0; i < this.asignacion.length; i++) {
+                var iden = this.asignacion[i];
+                if (iden) {
+                    environment.guardar(iden, null, this.type);
+                }
+                else {
+                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO SE ENCUENTRA DECLARADA");
+                }
             }
         }
     };

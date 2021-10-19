@@ -12,9 +12,8 @@ export class NewCleanArray extends Expression {
     }
 
     public execute(environment: Environment): Retorno {
-        const array = new Array();
-        
-        const value = this.expr.execute(environment);
+        let array = new Array();
+        let value = this.expr.execute(environment);
         if(value.type == Type.INT){
             for(let i=0; i< value.value; i++){
                 array.setValue(i, new Symbol(0, '', this.type));    

@@ -4,7 +4,7 @@ import { Function } from "../Instrucciones/Function";
 import { MiError, TypeError } from "../Errores/Error";
 
 export class Environment{
-    private variables : Map<string, Symbol>;
+    public variables : Map<string, Symbol>;
     public funciones : Map<string, Function>;
 
     constructor(public anterior : Environment | null){

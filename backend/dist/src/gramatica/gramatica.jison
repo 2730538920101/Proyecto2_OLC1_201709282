@@ -217,10 +217,11 @@ ENTORNO_GLOBAL
         $1=[$1];
         $$ = $1;
     }
-    /*|error { 
-        const er = new MiError(@1.first_line, @1.first_column, TypeError.SINTACTICO, "ERROR SINTACTICO EN: "+ yytext);
-        errores.push(er);
-    }*/
+    |error { 
+        /*let er = new MiError(@1.first_line, @1.first_column, TypeError.SINTACTICO, "ERROR SINTACTICO EN: "+ yytext);
+        errores.push(er);*/
+        console.log(yytext);
+    }
     ;
 
 //INSTRUCCIONES GLOBALES
@@ -600,7 +601,33 @@ DECLARACION_VARIABLE
             $$ = new Declaration( 4, $2, @1.first_line, @1.first_column);
         }    
     }
+    |TIPO_DATO LISTA_ID';'{
+        if($1 == "int"){
+            $$ = new Declaration( 0, $2, @1.first_line, @1.first_column);
+        }else if($1 == "double"){
+            $$ = new Declaration( 1, $2, @1.first_line, @1.first_column);
+        }else if($1 == "boolean"){
+            $$ = new Declaration( 2, $2, @1.first_line, @1.first_column);
+        }else if($1 == "char"){
+            $$ = new Declaration( 3, $2, @1.first_line, @1.first_column);
+        }else if($1 == "string"){
+            $$ = new Declaration( 4, $2, @1.first_line, @1.first_column);
+        }    
+    }
     |'lista_dinamica' '<' TIPO_DATO '>' ASIGNACION ';'{
+         if($3 == "int"){
+            $$ = new Declaration( 0, $5, @1.first_line, @1.first_column);
+        }else if($3 == "double"){
+            $$ = new Declaration( 1, $5, @1.first_line, @1.first_column);
+        }else if($3 == "boolean"){
+            $$ = new Declaration( 2, $5, @1.first_line, @1.first_column);
+        }else if($3 == "char"){
+            $$ = new Declaration( 3, $5, @1.first_line, @1.first_column);
+        }else if($3 == "string"){
+            $$ = new Declaration( 4, $5, @1.first_line, @1.first_column);
+        }    
+    }
+     |'lista_dinamica' '<' TIPO_DATO '>' LISTA_ID ';'{
          if($3 == "int"){
             $$ = new Declaration( 0, $5, @1.first_line, @1.first_column);
         }else if($3 == "double"){
@@ -632,13 +659,8 @@ ASIGNACION
         $$ = new AccessArrayAssigment($1, $3, $6, @1.first_line, @1.first_column);
         //console.log($6);
     }
-    |LISTA_ID '[' ']'{
-        $$ = new Assigment($1,[], @1.first_line, @1.first_column);
-        //console.log($1);
-    }
-    |LISTA_ID{
-        $$ = new Assigment($1,[], @1.first_line, @1.first_column);
-        //console.log($1);
+    |LISTA_ID '[' EXPRESION ']'{
+        $$ = new AccessArray($1[0], $3, @1.first_line, @1.first_column);
     }
      |'id' '++'{
         $$ = new ArithmeticAccess($1, 0, @1.first_line, @1.first_column);
@@ -745,7 +767,17 @@ EXPRESION
 //EXPRESIONES PARA DAR EL VALOR DEL ARRAY
 ARRAY
     :'{' VALORES_LIST '}'{
-        $$ = new NewArray($2, $2[0].type, @1.first_line, @1.first_column);
+         if($2 == "int"){
+             $$ = new NewArray($2, 0, @1.first_line, @1.first_column);
+        }else if($2 == "double"){
+            $$ = new NewArray($2, 1, @1.first_line, @1.first_column);
+        }else if($2 == "boolean"){
+            $$ = new NewArray($2, 2, @1.first_line, @1.first_column);
+        }else if($2 == "char"){
+            $$ = new NewArray($2, 3, @1.first_line, @1.first_column);
+        }else if($2 == "string"){
+         $$ = new NewArray($2, 4, @1.first_line, @1.first_column);
+        }
     }
     |'new' TIPO_DATO '[' EXPRESION ']'{
         if($2 == "int"){

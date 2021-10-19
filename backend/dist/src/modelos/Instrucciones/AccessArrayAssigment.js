@@ -17,6 +17,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccessArrayAssigment = void 0;
 var Retorno_1 = require("../Abstract/Retorno");
+var Symbol_1 = require("../Symbol/Symbol");
 var Error_1 = require("../Errores/Error");
 var Instrucciones_1 = require("../Abstract/Instrucciones");
 var AccessArrayAssigment = /** @class */ (function (_super) {
@@ -30,7 +31,7 @@ var AccessArrayAssigment = /** @class */ (function (_super) {
     }
     AccessArrayAssigment.prototype.execute = function (environment) {
         for (var i = 0; i < this.anterior.length; i++) {
-            var anterior = this.anterior[i].execute(environment);
+            var anterior = environment.getVar(this.anterior[i]);
             if (anterior) {
                 if (anterior.type != Retorno_1.Type.ARRAY) {
                     throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO ES UN ARREGLO");
@@ -42,11 +43,13 @@ var AccessArrayAssigment = /** @class */ (function (_super) {
                     }
                     else {
                         var valor = this.value.execute(environment);
-                        if (valor.type == anterior.type) {
-                            anterior.value.setValue(index.value, valor.value);
+                        if (valor.type == Retorno_1.Type.CHAR) {
+                            var sim = new Symbol_1.Symbol(String.fromCharCode(valor.value), anterior.id, valor.type);
+                            anterior.valor.setValue(index.value, sim);
                         }
                         else {
-                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "EL VALOR QUE DESEA ALMACENAR NO ES DEL TIPO DEL QUE LA VARIABLE FUE DECLARADA");
+                            var sim = new Symbol_1.Symbol(valor.value, anterior.id, valor.type);
+                            anterior.valor.setValue(index.value, sim);
                         }
                     }
                 }

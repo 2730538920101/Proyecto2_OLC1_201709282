@@ -36,7 +36,12 @@ var NewArray = /** @class */ (function (_super) {
         if (this.listExpr.every(function (actual) { return actual.execute(environment).type == _this.type; })) {
             this.listExpr.forEach(function (expr) {
                 var value = expr.execute(environment);
-                array.setValue(index++, new Symbol_1.Symbol(value.value, '', value.type));
+                if (value.type == Retorno_1.Type.CHAR) {
+                    array.setValue(index++, new Symbol_1.Symbol(String.fromCharCode(value.value), '', value.type));
+                }
+                else {
+                    array.setValue(index++, new Symbol_1.Symbol(value.value, '', value.type));
+                }
             });
             return { value: array, type: Retorno_1.Type.ARRAY };
         }

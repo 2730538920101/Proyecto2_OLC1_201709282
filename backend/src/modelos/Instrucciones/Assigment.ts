@@ -19,8 +19,7 @@ export class Assigment extends Instruction{
                     environment.guardar(iden, val.value, val.type);
                 }else{
                     throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA VARIABLE NO SE ENCUENTRA DECLARADA");
-                }
-                
+                }              
             }
         }else{
             throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO SE PUEDE ASIGNAR EL VALOR");

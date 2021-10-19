@@ -69,7 +69,7 @@ export class Call extends Instruction{
                     throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION QUE ESTA LLAMANDO NO HA SIDO DECLARADA");
                 }
             case TypeCall.WRITELINE:
-                const imprimir = this.expresiones[0].execute(environment).value;
+                let imprimir = this.expresiones[0].execute(environment).value;
                 if(this.expresiones.length == 1){
                     console.log(imprimir);
                     break;

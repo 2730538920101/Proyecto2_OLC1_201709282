@@ -11,13 +11,17 @@ export class NewArray extends Expression {
         super(line, column);
     }
 
-    public execute(environment: Environment): Retorno {
-        const array = new Array();
+    public execute(environment: Environment): any {
+        let array = new Array();
         let index = 0;
         if(this.listExpr.every((actual)=> actual.execute(environment).type == this.type)){
             this.listExpr.forEach((expr) => {            
-                const value = expr.execute(environment);
-                array.setValue(index++, new Symbol(value.value, '', value.type));
+                let value = expr.execute(environment);
+                if(value.type == Type.CHAR){
+                    array.setValue(index++, new Symbol(String.fromCharCode(value.value), '', value.type));
+                }else{
+                    array.setValue(index++, new Symbol(value.value, '', value.type));
+                }
             });
             return { value: array, type: Type.ARRAY };
         }else{
