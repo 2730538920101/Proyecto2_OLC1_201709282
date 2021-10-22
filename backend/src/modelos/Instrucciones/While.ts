@@ -16,17 +16,20 @@ export class While extends Instruction{
             while(condition.value == true){
                 const element = this.code.execute(env);
                 if(element != null || element != undefined){
-                    console.log(element);
-                    if(element.type == 'Break')
+                    if(element.type == Type.BREAK){
                         break;
-                    else if(element.type == 'Continue'){
+                    }else if(element.type == Type.CONTINUE){
                         condition = this.condition.execute(env);
                         continue;
                     }
-                    else
+                    else{
                         return element;
+                    }
                 }
-                
+                condition = this.condition.execute(env);
+                if(condition.type != Type.BOOLEAN){
+                    throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA EXPRESION RECIBIDA NO ES DE TIPO BOOLEAN");
+                }
             }
         }
     }

@@ -9,12 +9,15 @@
     const { NewArray } = require('../modelos/Expresiones/NewArray');
     const { NewCleanArray } = require('../modelos/Expresiones/NewCleanArray');
     const { NewList } = require('../modelos/Expresiones/NewList');
-    const { Array } = require('../modelos/Symbol/Array');
+    const { MiArray } = require('../modelos/Symbol/Array');
     const { List } = require('../modelos/Symbol/List');
     const { Access } = require('../modelos/Expresiones/Access');
     const { Params } = require('../modelos/Expresiones/Params');
     const { Casting } = require('../modelos/Expresiones/Casting');
-    const { ArithmeticAccess, ArithmeticAccessOption} = require('../modelos/Expresiones/ArithmeticAccess');
+    const { ArithmeticAccess } = require('../modelos/Expresiones/ArithmeticAccess');
+    const { ArithmeticAccess2 } = require('../modelos/Expresiones/ArithmeticAccess2');
+    const { ArithmeticAccessI } = require('../modelos/Instrucciones/ArithmeticAccessI');
+    const { ArithmeticAccessI2 } = require('../modelos/Instrucciones/ArithmeticAccessI2');
     const { CallExp, TypeCallExp } = require('../modelos/Expresiones/CallExp');
     const { Call, TypeCall } = require('../modelos/Instrucciones/Call');
     const { Declaration } = require('../modelos/Instrucciones/Declaration');
@@ -114,12 +117,12 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 
 
 //OPERADORES RELACIONALES
-"<"                     return '<'
-">"                     return '>'
 "<="                    return '<='
 ">="                    return '>='
 "=="                    return '=='
 "!="                    return '!='
+"<"                     return '<'
+">"                     return '>'
 
 //ASIGNACION
 "="                     return '='
@@ -168,8 +171,8 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 /lex
 
 //DEFINIR PRECEDENCIA DE LOS OPERADORES
-%right          '(' 
-%left           ')'
+
+%nonassoc       '(' , ')'
 %right          '-'
 %nonassoc       'ˆ'
 %left           '/','*'
@@ -181,7 +184,7 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 %left           '&&'
 %left           '||'
 %left           '%'
-%nonassoc       '++','--'
+%right          '++','--'
 
 
 
@@ -201,7 +204,7 @@ INICIO
             console.log('ANALISIS EXITOSO');
             return $1;
         }catch(e){
-            console.log(e);
+            console.log("EXISTE UNO O VARIOS ERRORES");
         }
         
     }
@@ -214,13 +217,11 @@ ENTORNO_GLOBAL
         $$ = $1;
     }
     |GLOBAL{
-        $1=[$1];
-        $$ = $1;
+        $$ = [$1];
     }
     |error { 
-        /*let er = new MiError(@1.first_line, @1.first_column, TypeError.SINTACTICO, "ERROR SINTACTICO EN: "+ yytext);
-        errores.push(er);*/
-        console.log(yytext);
+        let er = new MiError(@1.first_line, @1.first_column, TypeError.SINTACTICO, "ERROR SINTACTICO EN: "+ yytext);
+        errores.push(er);    
     }
     ;
 
@@ -445,12 +446,14 @@ GENERARSWITCH
 //LISTA DE CASOS DEL SWITCH
 CASES_LIST
     :CASES_LIST 'case' EXPRESION ':' INSTRUCCIONES{
-        let case1 =  new Case($3, $5, @1.first_line, @1.first_column);
+        let code = new Statement($5, @1.first_line, @1.first_column);
+        let case1 =  new Case($3, code, @1.first_line, @1.first_column);
         $1.push(case1);
         $$ = $1;
     }
     |'case' EXPRESION ':' INSTRUCCIONES{
-        let case2 =  new Case($2, $4, @1.first_line, @1.first_column);
+        let code2 = new Statement($4, @1.first_line, @1.first_column);
+        let case2 =  new Case($2, code2, @1.first_line, @1.first_column);
         $$ = [case2];
     }
     ;
@@ -458,7 +461,8 @@ CASES_LIST
 //DEFAULT PARA EL SWITCH
 DEFAULT
     :'default' ':' INSTRUCCIONES{
-        let case3 =  new Case(null, $3, @1.first_line, @1.first_column);
+        let code3  = new Statement($3, @1.first_line, @1.first_column);
+        let case3 =  new Case(null, code3, @1.first_line, @1.first_column);
         $$ = case3;
     }
     ;
@@ -476,7 +480,7 @@ GENERARFOR
         $$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column);
     }
     |'for' '(' ASIGNACION ';' EXPRESION ';' ASIGNACION ')' ENTORNO{
-        $$ = new For($4, $5, $7, $9, @1.first_line, @1.first_column);
+        $$ = new For($3, $5, $7, $9, @1.first_line, @1.first_column);
     }
     ;
 
@@ -490,38 +494,21 @@ GENERARDOWHILE
 //ENTORNO PARA EL SWITCH
 ENTORNO_SWITCH
     :'{' CASES_LIST DEFAULT '}'{
-        let entlist = [];
-        $2.forEach((bloque)=>{
-            let env = new Statement(bloque, @1.first_line, @1.first_column);
-            entlist.push(env);    
-        });
-        let env2 = new Statement($3, @1.first_line, @1.first_column);
-        entlist.push(env2);
-        //console.log(entlist);
-        $$ = entlist;
+        $2.push($3);
+        $$ = $2;
     }
     |'{' CASES_LIST '}'{
-        let entlist2 = [];
-        $2.forEach((bloque)=>{
-            let env = new Statement(bloque, @1.first_line, @1.first_column);
-            entlist2.push(env);    
-        });
-        //console.log(entlist2);
-        $$ = entlist2;
+        $$ = $2;
     }
     |'{' DEFAULT '}'{
-        let entlist3 = [];
-        let env3 = new Statement($2, @1.first_line, @1.first_column);
-        entlist3.push(env3);
-        //console.log(entlist3)
-        $$ = entlist3;
+        $$ = [$2];  
     }
     ;
 
 //ENTORNO PARA EL ENCAPSULAMIENTO DE INSTRUCCIONES EN DIFERENTES AMBITOS
 ENTORNO
     :'{' '}'{
-         $$ = new Statement(new Array(), @1.first_line, @1.first_column);
+         $$ = new Statement([], @1.first_line, @1.first_column);
     }
     |'{' INSTRUCCIONES '}'{
          $$ = new Statement($2, @1.first_line, @1.first_column);
@@ -530,11 +517,11 @@ ENTORNO
 
 //LLAMADA A LOS METODOS
 METODOS_CALL
-    :'append' '(' LISTA_VALORES ')'{
-        $$ = new Call($1, $3, TypeCall.APPEND, @1.first_line, @1.first_column);
+    :'append' '(' 'id' ',' EXPRESION ')'{
+        $$ = new Call($3, [$5], TypeCall.APPEND, @1.first_line, @1.first_column);
     }
-    |'setValue' '(' LISTA_VALORES ')'{
-        $$ = new Call($1, $3, TypeCall.SETVALUE, @1.first_line, @1.first_column);
+    |'setValue' '(' 'id' ',' LISTA_VALORES ')'{
+        $$ = new Call($3, $5, TypeCall.SETVALUE, @1.first_line, @1.first_column);
     }
     |'WriteLine' '(' LISTA_VALORES ')'{
         $$ = new Call($1, $3, TypeCall.WRITELINE, @1.first_line, @1.first_column);
@@ -549,8 +536,8 @@ METODOS_CALL
 
 //LLAMADA DE FUNCIONES
 FUNCIONES_CALL   
-    :'getValue' '(' LISTA_VALORES ')'{
-        $$ = new CallExp($1, $3, TypeCallExp.GETVALUE, @1.first_line, @1.first_column);
+    :'getValue' '(' 'id' ',' LISTA_VALORES ')'{
+        $$ = new CallExp($3, $5, TypeCallExp.GETVALUE, @1.first_line, @1.first_column);
     }
     |'toLower' '(' LISTA_VALORES ')'{
         $$ = new CallExp($1, $3, TypeCallExp.TOLOWER, @1.first_line, @1.first_column);
@@ -659,14 +646,11 @@ ASIGNACION
         $$ = new AccessArrayAssigment($1, $3, $6, @1.first_line, @1.first_column);
         //console.log($6);
     }
-    |LISTA_ID '[' EXPRESION ']'{
-        $$ = new AccessArray($1[0], $3, @1.first_line, @1.first_column);
-    }
-     |'id' '++'{
-        $$ = new ArithmeticAccess($1, 0, @1.first_line, @1.first_column);
+    |'id' '++'{
+        $$ = new ArithmeticAccessI($1, @1.first_line, @1.first_column);
     }
     |'id' '--'{
-        $$ = new ArithmeticAccess($1, 1, @1.first_line, @1.first_column);
+        $$ = new ArithmeticAccessI2($1, @1.first_line, @1.first_column);
     }
     ;
 
@@ -756,28 +740,18 @@ EXPRESION
     |'id'{
         $$ = new Access($1, @1.first_line, @1.first_column);
     }
-     |'id' '++'{
-        $$ = new ArithmeticAccess($1, 0, @1.first_line, @1.first_column);
+    |'id' '++'{
+        $$ = new ArithmeticAccess($1, @1.first_line, @1.first_column);
     }
     |'id' '--'{
-        $$ = new ArithmeticAccess($1, 1, @1.first_line, @1.first_column);
+        $$ = new ArithmeticAccess2($1, @1.first_line, @1.first_column);
     }
     ;
 
 //EXPRESIONES PARA DAR EL VALOR DEL ARRAY
 ARRAY
     :'{' VALORES_LIST '}'{
-         if($2 == "int"){
-             $$ = new NewArray($2, 0, @1.first_line, @1.first_column);
-        }else if($2 == "double"){
-            $$ = new NewArray($2, 1, @1.first_line, @1.first_column);
-        }else if($2 == "boolean"){
-            $$ = new NewArray($2, 2, @1.first_line, @1.first_column);
-        }else if($2 == "char"){
-            $$ = new NewArray($2, 3, @1.first_line, @1.first_column);
-        }else if($2 == "string"){
-         $$ = new NewArray($2, 4, @1.first_line, @1.first_column);
-        }
+        $$ = new NewArray($2, @1.first_line, @1.first_column);    
     }
     |'new' TIPO_DATO '[' EXPRESION ']'{
         if($2 == "int"){
@@ -792,7 +766,7 @@ ARRAY
             $$ = new NewCleanArray($4, 4, @1.first_line, @1.first_column);
         }
     }
-    |'id' '[' VALORES ']'{
+    |'id' '[' EXPRESION ']'{
         $$ = new AccesArray($1, $3, @1.first_line, @1.first_column);
     }
     ;

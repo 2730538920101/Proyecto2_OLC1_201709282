@@ -17,13 +17,14 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Break = void 0;
 var Instrucciones_1 = require("../Abstract/Instrucciones");
+var Retorno_1 = require("../Abstract/Retorno");
 var Break = /** @class */ (function (_super) {
     __extends(Break, _super);
     function Break(line, column) {
         return _super.call(this, line, column) || this;
     }
     Break.prototype.execute = function (environment) {
-        return { line: this.line, column: this.column, type: 'Break' };
+        return { line: this.line, column: this.column, type: Retorno_1.Type.BREAK };
     };
     return Break;
 }(Instrucciones_1.Instruction));

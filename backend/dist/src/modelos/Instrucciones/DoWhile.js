@@ -37,14 +37,18 @@ var DoWhile = /** @class */ (function (_super) {
                 var element = this.code.execute(env);
                 if (element != null || element != undefined) {
                     console.log(element);
-                    if (element.type == 'Break')
+                    if (element.type == Retorno_1.Type.BREAK)
                         break;
-                    else if (element.type == 'Continue') {
+                    else if (element.type == Retorno_1.Type.CONTINUE) {
                         condition = this.condition.execute(env);
                         continue;
                     }
                     else
                         return element;
+                }
+                condition = this.condition.execute(env);
+                if (condition.type != Retorno_1.Type.BOOLEAN) {
+                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA EXPRESION RECIBIDA NO ES DE TIPO BOOLEAN");
                 }
             } while (condition.value == true);
         }

@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.List = void 0;
 var List = /** @class */ (function () {
-    function List() {
+    function List(type) {
+        this.type = type;
         this.values = [];
     }
     List.prototype.getValue = function (index) {
@@ -10,6 +11,9 @@ var List = /** @class */ (function () {
     };
     List.prototype.setValue = function (index, value) {
         this.values[index] = value;
+    };
+    List.prototype.append = function (value) {
+        this.values.push(value);
     };
     return List;
 }());

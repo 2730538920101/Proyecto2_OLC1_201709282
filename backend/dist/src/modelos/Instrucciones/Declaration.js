@@ -29,7 +29,9 @@ var Declaration = /** @class */ (function (_super) {
     Declaration.prototype.execute = function (environment) {
         try {
             var tipo = this.asignacion.getType(environment);
+            var id = this.asignacion.getId();
             if (tipo == this.type) {
+                environment.guardar(id, null, this.type);
                 this.asignacion.execute(environment);
             }
             else {

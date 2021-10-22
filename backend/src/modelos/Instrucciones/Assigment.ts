@@ -5,6 +5,7 @@ import { Type } from '../Abstract/Retorno';
 import { MiError, TypeError } from '../Errores/Error';
 
 
+
 export class Assigment extends Instruction{
     constructor(private id:Array<string>, private value:Expression, line:number, column:number){
         super(line, column);
@@ -14,9 +15,9 @@ export class Assigment extends Instruction{
         let val = this.value.execute(environment);
         if(val != null || val != undefined){
             for(let i = 0; i < this.id.length; i++){
-                let iden = this.id[i];
-                if(iden){
-                    environment.guardar(iden, val.value, val.type);
+                let iden = environment.getVar(this.id[i]);
+                if(iden != null || iden != undefined){
+                    environment.guardar(this.id[0], val.value, val.type);
                 }else{
                     throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA VARIABLE NO SE ENCUENTRA DECLARADA");
                 }              
@@ -27,12 +28,18 @@ export class Assigment extends Instruction{
     }
 
     public getType(environment:Environment):Type{
-        if((this.value.execute(environment).type == Type.ARRAY)||(this.value.execute(environment).type == Type.LIST)){
+        if(this.value.execute(environment).type == Type.ARRAY){
             return this.value.execute(environment).value.getValue(0).type;
 
+        }else if(this.value.execute(environment).type == Type.LIST){
+            return this.value.execute(environment).value.type;
         }else{
             return this.value.execute(environment).type;
         }
+    }
+
+    public getId():string{
+        return this.id[0];
     }
 
 }

@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Array = void 0;
-var Array = /** @class */ (function () {
-    function Array() {
+exports.MiArray = void 0;
+var MiArray = /** @class */ (function () {
+    function MiArray() {
         this.values = [];
     }
-    Array.prototype.getValue = function (index) {
+    MiArray.prototype.getValue = function (index) {
         return this.values[index];
     };
-    Array.prototype.setValue = function (index, value) {
+    MiArray.prototype.setValue = function (index, value) {
         this.values[index] = value;
     };
-    return Array;
+    return MiArray;
 }());
-exports.Array = Array;
+exports.MiArray = MiArray;

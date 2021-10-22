@@ -13,6 +13,7 @@ export abstract class Expression {
     }
 
     public abstract execute(environment: Environment) : Retorno;
+   
 
     public DominanteSuma(tipo1 : Type, tipo2 : Type) : Type{
         const type = TablaSuma[tipo1][tipo2];

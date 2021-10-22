@@ -26,8 +26,13 @@ var Case = /** @class */ (function (_super) {
         return _this;
     }
     Case.prototype.execute = function (environment) {
-        var _a;
-        return { exp: (_a = this.exp) === null || _a === void 0 ? void 0 : _a.execute(environment), ins: this.code.execute(environment) };
+        var element = this.code.execute(environment);
+        if (element != null || element != undefined) {
+            return element;
+        }
+    };
+    Case.prototype.getExp = function () {
+        return this.exp;
     };
     return Case;
 }(Instrucciones_1.Instruction));

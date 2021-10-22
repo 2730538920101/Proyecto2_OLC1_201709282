@@ -1,7 +1,7 @@
 import { Instruction } from "../Abstract/Instrucciones";
 import { Expression } from "../Abstract/Expresiones";
 import { Environment } from "../Symbol/Enviorment";
-import { Type } from "../Abstract/Retorno";
+import { Type } from '../Abstract/Retorno';
 import { MiError , TypeError} from '../Errores/Error';
 
 export class DoWhile extends Instruction{
@@ -17,14 +17,18 @@ export class DoWhile extends Instruction{
                 const element = this.code.execute(env);
                 if(element != null || element != undefined){
                     console.log(element);
-                    if(element.type == 'Break')
+                    if(element.type == Type.BREAK)
                         break;
-                    else if(element.type == 'Continue'){
+                    else if(element.type == Type.CONTINUE){
                         condition = this.condition.execute(env);
                         continue;
                     }
                     else
                         return element;
+                }
+                condition = this.condition.execute(env);
+                if(condition.type != Type.BOOLEAN){
+                    throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA EXPRESION RECIBIDA NO ES DE TIPO BOOLEAN");
                 }
             }while(condition.value == true);
         }

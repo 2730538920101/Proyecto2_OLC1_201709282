@@ -1,6 +1,7 @@
 import { Instruction } from "../Abstract/Instrucciones";
-import { Expression } from "../Abstract/Expresiones";
+import { Expression } from '../Abstract/Expresiones';
 import { Environment } from "../Symbol/Enviorment";
+import { Type } from "../Abstract/Retorno";
 
 
 
@@ -10,6 +11,14 @@ export class Case extends Instruction{
     }
 
     public execute(environment:Environment){
-        return {exp:this.exp?.execute(environment), ins:this.code.execute(environment)};
+        const element = this.code.execute(environment);
+                if(element != null || element != undefined){
+                    return element;
+                }
+    }
+
+    public getExp():Expression|null{
+        return this.exp;
     }
 }
+

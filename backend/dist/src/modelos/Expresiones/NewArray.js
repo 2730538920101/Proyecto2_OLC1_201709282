@@ -23,17 +23,15 @@ var Symbol_1 = require("../Symbol/Symbol");
 var Error_1 = require("../Errores/Error");
 var NewArray = /** @class */ (function (_super) {
     __extends(NewArray, _super);
-    function NewArray(listExpr, type, line, column) {
+    function NewArray(listExpr, line, column) {
         var _this = _super.call(this, line, column) || this;
         _this.listExpr = listExpr;
-        _this.type = type;
         return _this;
     }
     NewArray.prototype.execute = function (environment) {
-        var _this = this;
-        var array = new Array_1.Array();
+        var array = new Array_1.MiArray();
         var index = 0;
-        if (this.listExpr.every(function (actual) { return actual.execute(environment).type == _this.type; })) {
+        if (this.listExpr.every(function (actual) { return (actual.execute(environment).type == Retorno_1.Type.INT) || (actual.execute(environment).type == Retorno_1.Type.DOUBLE) || (actual.execute(environment).type == Retorno_1.Type.CHAR) || (actual.execute(environment).type == Retorno_1.Type.BOOLEAN) || (actual.execute(environment).type == Retorno_1.Type.STRING); })) {
             this.listExpr.forEach(function (expr) {
                 var value = expr.execute(environment);
                 if (value.type == Retorno_1.Type.CHAR) {

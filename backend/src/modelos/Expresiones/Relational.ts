@@ -21,22 +21,22 @@ export class Relational extends Expression{
         const leftValue = this.left.execute(environment);
         const rightValue = this.right.execute(environment);
         if(this.type == RelationalOption.IGUAL_IGUAL){
-            const result = leftValue.value == rightValue.value;
+            const result = (leftValue.value == rightValue.value);
             return {value : result, type : Type.BOOLEAN};
         }else if(this.type == RelationalOption.DIFERENCIA){
-            const result = leftValue.value != rightValue.value;
+            const result = (leftValue.value != rightValue.value);
             return {value : result, type : Type.BOOLEAN};
         }else if(this.type == RelationalOption.MENOR){
-            const result = leftValue.value < rightValue.value;
+            const result = (leftValue.value < rightValue.value);
             return {value : result, type : Type.BOOLEAN};
         }else if(this.type == RelationalOption.MENOR_IGUAL){
-            const result = leftValue.value <= rightValue.value;
+            const result = (leftValue.value <= rightValue.value);
             return {value : result, type : Type.BOOLEAN};
         }else if(this.type == RelationalOption.MAYOR){
-            const result = leftValue.value > rightValue.value;
+            const result = (leftValue.value > rightValue.value);
             return {value : result, type : Type.BOOLEAN};
         }else if(this.type == RelationalOption.MAYOR_IGUAL){
-            const result = leftValue.value >= rightValue.value;
+            const result = (leftValue.value >= rightValue.value);
             return {value : result, type : Type.BOOLEAN};
         }else{
             return {value:null, type : Type.NULL};

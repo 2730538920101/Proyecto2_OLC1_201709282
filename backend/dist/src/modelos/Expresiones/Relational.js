@@ -40,27 +40,27 @@ var Relational = /** @class */ (function (_super) {
         var leftValue = this.left.execute(environment);
         var rightValue = this.right.execute(environment);
         if (this.type == RelationalOption.IGUAL_IGUAL) {
-            var result = leftValue.value == rightValue.value;
+            var result = (leftValue.value == rightValue.value);
             return { value: result, type: Retorno_1.Type.BOOLEAN };
         }
         else if (this.type == RelationalOption.DIFERENCIA) {
-            var result = leftValue.value != rightValue.value;
+            var result = (leftValue.value != rightValue.value);
             return { value: result, type: Retorno_1.Type.BOOLEAN };
         }
         else if (this.type == RelationalOption.MENOR) {
-            var result = leftValue.value < rightValue.value;
+            var result = (leftValue.value < rightValue.value);
             return { value: result, type: Retorno_1.Type.BOOLEAN };
         }
         else if (this.type == RelationalOption.MENOR_IGUAL) {
-            var result = leftValue.value <= rightValue.value;
+            var result = (leftValue.value <= rightValue.value);
             return { value: result, type: Retorno_1.Type.BOOLEAN };
         }
         else if (this.type == RelationalOption.MAYOR) {
-            var result = leftValue.value > rightValue.value;
+            var result = (leftValue.value > rightValue.value);
             return { value: result, type: Retorno_1.Type.BOOLEAN };
         }
         else if (this.type == RelationalOption.MAYOR_IGUAL) {
-            var result = leftValue.value >= rightValue.value;
+            var result = (leftValue.value >= rightValue.value);
             return { value: result, type: Retorno_1.Type.BOOLEAN };
         }
         else {

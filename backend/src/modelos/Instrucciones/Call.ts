@@ -2,6 +2,8 @@ import { Instruction } from "../Abstract/Instrucciones";
 import { Environment } from "../Symbol/Enviorment";
 import { Expression } from "../Abstract/Expresiones";
 import { MiError, TypeError } from '../Errores/Error';
+import { Type } from "../Abstract/Retorno";
+import { Symbol } from '../Symbol/Symbol';
 
 export enum TypeCall{
     DECLARED,
@@ -77,8 +79,47 @@ export class Call extends Instruction{
                     throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION WRITELINE SOLO PUEDE RECIBIR UN PARAMETRO");
                 }
             case TypeCall.SETVALUE:
-                
+                let variable = environment.getVar(this.id);
+                if(variable){
+                    if(this.expresiones.length == 2){
+                        let indice = this.expresiones[0].execute(environment).value;
+                        let elegido = variable.valor;
+                        if(elegido.type == this.expresiones[1].execute(environment).type){
+                            let simb = new Symbol(this.expresiones[1].execute(environment).value,this.id, elegido.type);
+                            elegido.setValue(indice, simb);
+                            break;
+                        }else{
+                            throw new MiError(this.line, this.column, TypeError.SEMANTICO, "EL VALOR QUE DESEA INGRESAR NO ES DEL MISMO TIPO QUE LA LISTA");
+                        }
+                    }else{
+                        throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION SETVALUE RECIBE COMO SEGUNDO PARAMETRO UN INDICE Y COMO TERCER PARAMETRO UN VALOR");
+                    }
+                }else{
+                    throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION SETVALUE DEBE RECIBIR EL NOMBRE DE UNA VARIABLE COMO PRIMER PARAMETRO");
+                }      
             case TypeCall.APPEND:
+                let variable2 = environment.getVar(this.id);
+                if(variable2){
+                    if(this.expresiones.length == 1){
+                        let valadd = this.expresiones[0].execute(environment);
+                        let varadd = variable2.valor;
+                        if(valadd != null || valadd != undefined){
+                            if(varadd.type == valadd.type){
+                                let sim = new Symbol(this.expresiones[0].execute(environment).value, this.id, valadd.type);
+                                varadd.append(sim);
+                                break
+                            }else{
+                                throw new MiError(this.line, this.column, TypeError.SEMANTICO, "EL VALOR QUE DESEA INGRESAR NO ES DEL TIPO DE LA LISTA");    
+                            }
+                        }else{
+                            throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA LISTA NO HA SIDO DECLARADA");
+                        }
+                    }else{
+                        throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION APPEND SOLO PUEDE RECIBIR UN VALOR COMO SEGUNDO PARAMETRO");  
+                    }
+                }else{
+                    throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION APPEND DEBE RECIBIR EL NOMBRE DE UNA VARIABLE COMO PRIMER PARAMETRO");
+                }
         }
     }
 }

@@ -19,6 +19,7 @@ exports.Call = exports.TypeCall = void 0;
 var Instrucciones_1 = require("../Abstract/Instrucciones");
 var Enviorment_1 = require("../Symbol/Enviorment");
 var Error_1 = require("../Errores/Error");
+var Symbol_1 = require("../Symbol/Symbol");
 var TypeCall;
 (function (TypeCall) {
     TypeCall[TypeCall["DECLARED"] = 0] = "DECLARED";
@@ -105,7 +106,54 @@ var Call = /** @class */ (function (_super) {
                     throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION WRITELINE SOLO PUEDE RECIBIR UN PARAMETRO");
                 }
             case TypeCall.SETVALUE:
+                var variable = environment.getVar(this.id);
+                if (variable) {
+                    if (this.expresiones.length == 2) {
+                        var indice = this.expresiones[0].execute(environment).value;
+                        var elegido = variable.valor;
+                        if (elegido.type == this.expresiones[1].execute(environment).type) {
+                            var simb = new Symbol_1.Symbol(this.expresiones[1].execute(environment).value, this.id, elegido.type);
+                            elegido.setValue(indice, simb);
+                            break;
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "EL VALOR QUE DESEA INGRESAR NO ES DEL MISMO TIPO QUE LA LISTA");
+                        }
+                    }
+                    else {
+                        throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION SETVALUE RECIBE COMO SEGUNDO PARAMETRO UN INDICE Y COMO TERCER PARAMETRO UN VALOR");
+                    }
+                }
+                else {
+                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION SETVALUE DEBE RECIBIR EL NOMBRE DE UNA VARIABLE COMO PRIMER PARAMETRO");
+                }
             case TypeCall.APPEND:
+                var variable2 = environment.getVar(this.id);
+                if (variable2) {
+                    if (this.expresiones.length == 1) {
+                        var valadd = this.expresiones[0].execute(environment);
+                        var varadd = variable2.valor;
+                        if (valadd != null || valadd != undefined) {
+                            if (varadd.type == valadd.type) {
+                                var sim = new Symbol_1.Symbol(this.expresiones[0].execute(environment).value, this.id, valadd.type);
+                                varadd.append(sim);
+                                break;
+                            }
+                            else {
+                                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "EL VALOR QUE DESEA INGRESAR NO ES DEL TIPO DE LA LISTA");
+                            }
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA LISTA NO HA SIDO DECLARADA");
+                        }
+                    }
+                    else {
+                        throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION APPEND SOLO PUEDE RECIBIR UN VALOR COMO SEGUNDO PARAMETRO");
+                    }
+                }
+                else {
+                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION APPEND DEBE RECIBIR EL NOMBRE DE UNA VARIABLE COMO PRIMER PARAMETRO");
+                }
         }
     };
     return Call;

@@ -155,7 +155,7 @@ export class CallExp extends Instruction{
                     throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION TOSTRING SOLO PUEDE RECIBIR UN PARAMETRO");
                 }
             case TypeCallExp.TRUNCATE:
-                const truncateval = this.expresiones[0].execute(environment);
+                let truncateval = this.expresiones[0].execute(environment);
                 if(this.expresiones.length == 1){
                     if(truncateval.type == Type.DOUBLE){
                         return {value:Math.trunc(truncateval.value),type:Type.INT};
@@ -172,7 +172,7 @@ export class CallExp extends Instruction{
                     throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION TRUNCATE SOLO PUEDE RECIBIR UN PARAMETRO");
                 }
             case TypeCallExp.TYPEOF:
-                const typeofval = this.expresiones[0].execute(environment);
+                let typeofval = this.expresiones[0].execute(environment);
                 if(this.expresiones.length == 1){
                     if(typeofval.type != Type.RETURN){
                         return {value:typeofval.type.toString(), type:Type.STRING};
@@ -182,7 +182,19 @@ export class CallExp extends Instruction{
                 }else{
                     throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION TYPEOF SOLO PUEDE RECIBIR UN PARAMETRO");  
                 }
-                case TypeCallExp.GETVALUE:         
+                case TypeCallExp.GETVALUE:
+                    let variable = environment.getVar(this.id);
+                    if(variable?.type == Type.LIST){
+                        let indice = this.expresiones[0].execute(environment)
+                        if(indice.type == Type.INT){
+                            let seleccionado = variable.valor.getValue(indice.value);
+                            return { value: seleccionado.valor, type:seleccionado.type};
+                        }else{
+                            throw new MiError(this.line,this.column, TypeError.SEMANTICO, "EL SEGUNDO PARAMETRO QUE RECIBE LA FUNCION GETVALUE DEBE SER UN ENTERO");
+                        }
+                    }else{
+                        throw new MiError(this.line, this.column, TypeError.SEMANTICO, "EL PRIMER PARAMETRO QUE RECIBE LA FUNCION GETVALUE DEBE SER UNA VARIABLE DE TIPO DYNAMIC LIST");
+                    }     
         }
         
     }

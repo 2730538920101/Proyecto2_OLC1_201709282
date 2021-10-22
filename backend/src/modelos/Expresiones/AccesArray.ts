@@ -22,7 +22,11 @@ export class AccesArray extends Expression {
                         throw new MiError(this.line, this.column,TypeError.SEMANTICO, "EL INDICE NO ES UN NUMERO");
                     }else{
                         let valoractual = anterior.valor.getValue(index.value);
-                        return {value: valoractual.valor, type: valoractual.type};
+                        if(valoractual){
+                            return {value: valoractual.valor, type: valoractual.type};
+                        }else{
+                            throw new MiError(this.line, this.column,TypeError.SEMANTICO, "EL INDICE INGRESADO SE ENCUENTRA FUERA DEL LIMITE DEL ARREGLO");
+                        }
                     }
                 }else{
                     throw new MiError(this.line, this.column,TypeError.SEMANTICO, "NO HA ENVIADO EL INDICE CORRECTAMENTE");

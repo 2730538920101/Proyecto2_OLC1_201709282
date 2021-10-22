@@ -15,21 +15,14 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ArithmeticAccess = exports.ArithmeticAccessOption = void 0;
+exports.ArithmeticAccess = void 0;
 var Error_1 = require("../Errores/Error");
 var Expresiones_1 = require("../Abstract/Expresiones");
-var Retorno_1 = require("../Abstract/Retorno");
-var ArithmeticAccessOption;
-(function (ArithmeticAccessOption) {
-    ArithmeticAccessOption[ArithmeticAccessOption["MENOS_MENOS"] = 0] = "MENOS_MENOS";
-    ArithmeticAccessOption[ArithmeticAccessOption["MAS_MAS"] = 1] = "MAS_MAS";
-})(ArithmeticAccessOption = exports.ArithmeticAccessOption || (exports.ArithmeticAccessOption = {}));
 var ArithmeticAccess = /** @class */ (function (_super) {
     __extends(ArithmeticAccess, _super);
-    function ArithmeticAccess(id, type, line, column) {
+    function ArithmeticAccess(id, line, column) {
         var _this = _super.call(this, line, column) || this;
         _this.id = id;
-        _this.type = type;
         return _this;
     }
     ArithmeticAccess.prototype.execute = function (environment) {
@@ -38,19 +31,9 @@ var ArithmeticAccess = /** @class */ (function (_super) {
             throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO EXISTE");
         }
         else {
-            if (value.type == Retorno_1.Type.INT) {
-                if (this.type == ArithmeticAccessOption.MAS_MAS) {
-                    var val = value.valor + 1;
-                    return { value: val, type: value.type };
-                }
-                else {
-                    var val = value.valor - 1;
-                    return { value: val, type: value.type };
-                }
-            }
-            {
-                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "EL VALOR DE LA VARIABLE NO ES DE TIPO ENTERO");
-            }
+            value.valor = Number(value.valor) + 1;
+            environment.guardar(this.id, value.valor, value.type);
+            return { value: value.valor, type: value.type };
         }
     };
     return ArithmeticAccess;

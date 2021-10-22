@@ -235,6 +235,20 @@ var CallExp = /** @class */ (function (_super) {
                     throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TYPEOF SOLO PUEDE RECIBIR UN PARAMETRO");
                 }
             case TypeCallExp.GETVALUE:
+                var variable = environment.getVar(this.id);
+                if ((variable === null || variable === void 0 ? void 0 : variable.type) == Retorno_1.Type.LIST) {
+                    var indice = this.expresiones[0].execute(environment);
+                    if (indice.type == Retorno_1.Type.INT) {
+                        var seleccionado = variable.valor.getValue(indice.value);
+                        return { value: seleccionado.valor, type: seleccionado.type };
+                    }
+                    else {
+                        throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "EL SEGUNDO PARAMETRO QUE RECIBE LA FUNCION GETVALUE DEBE SER UN ENTERO");
+                    }
+                }
+                else {
+                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "EL PRIMER PARAMETRO QUE RECIBE LA FUNCION GETVALUE DEBE SER UNA VARIABLE DE TIPO DYNAMIC LIST");
+                }
         }
     };
     return CallExp;

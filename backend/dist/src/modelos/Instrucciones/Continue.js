@@ -15,16 +15,17 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Break = void 0;
+exports.Continue = void 0;
 var Instrucciones_1 = require("../Abstract/Instrucciones");
-var Break = /** @class */ (function (_super) {
-    __extends(Break, _super);
-    function Break(line, column) {
+var Retorno_1 = require("../Abstract/Retorno");
+var Continue = /** @class */ (function (_super) {
+    __extends(Continue, _super);
+    function Continue(line, column) {
         return _super.call(this, line, column) || this;
     }
-    Break.prototype.execute = function (environment) {
-        return { line: this.line, column: this.column, type: 'Continue' };
+    Continue.prototype.execute = function (environment) {
+        return { line: this.line, column: this.column, type: Retorno_1.Type.CONTINUE };
     };
-    return Break;
+    return Continue;
 }(Instrucciones_1.Instruction));
-exports.Break = Break;
+exports.Continue = Continue;

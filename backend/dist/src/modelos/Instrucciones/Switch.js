@@ -17,6 +17,8 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Switch = void 0;
 var Instrucciones_1 = require("../Abstract/Instrucciones");
+var Error_1 = require("../Errores/Error");
+var Retorno_1 = require("../Abstract/Retorno");
 var Switch = /** @class */ (function (_super) {
     __extends(Switch, _super);
     function Switch(cambio, casos, line, column) {
@@ -26,13 +28,38 @@ var Switch = /** @class */ (function (_super) {
         return _this;
     }
     Switch.prototype.execute = function (environment) {
+        var actual = this.cambio.execute(environment);
         for (var i = 0; i < this.casos.length; i++) {
-            var caso = this.casos[i].execute(environment);
-            if (this.cambio.execute(environment) == caso) {
-                return caso;
+            var casoexp = this.casos[i].getExp();
+            if (casoexp != null) {
+                var casoactual = casoexp.execute(environment);
+                if (actual.type == casoactual.type) {
+                    if (actual.value == casoactual.value) {
+                        var element = this.casos[i].execute(environment);
+                        if (element != null || element != undefined) {
+                            if (element.type == Retorno_1.Type.BREAK) {
+                                break;
+                            }
+                            else {
+                                return element;
+                            }
+                        }
+                    }
+                }
+                else {
+                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "EL VALOR DEL CASE NO ES DEL MISMO TIPO QUE EL VALOR ASIGNADO EN EL SWITCH");
+                }
             }
-            else if (caso == null) {
-                return caso;
+            else {
+                var element = this.casos[i].execute(environment);
+                if (element != null || element != undefined) {
+                    if (element.type == Retorno_1.Type.BREAK) {
+                        break;
+                    }
+                    else {
+                        return element;
+                    }
+                }
             }
         }
     };

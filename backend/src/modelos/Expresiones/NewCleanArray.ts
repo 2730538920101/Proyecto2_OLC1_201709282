@@ -1,7 +1,7 @@
 import { Expression } from "../Abstract/Expresiones"
 import { Environment } from "../Symbol/Enviorment";
 import { Retorno, Type } from "../Abstract/Retorno";
-import { Array } from "../Symbol/Array";
+import { MiArray } from "../Symbol/Array";
 import { Symbol } from "../Symbol/Symbol";
 import { MiError, TypeError } from "../Errores/Error";
 
@@ -12,7 +12,7 @@ export class NewCleanArray extends Expression {
     }
 
     public execute(environment: Environment): Retorno {
-        let array = new Array();
+        let array = new MiArray();
         let value = this.expr.execute(environment);
         if(value.type == Type.INT){
             for(let i=0; i< value.value; i++){

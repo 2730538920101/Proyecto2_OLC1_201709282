@@ -1,9 +1,10 @@
-import { Symbol } from "./Symbol";
+import { Type } from '../Abstract/Retorno';
+import { Symbol } from './Symbol';
 
 export class List{
     public values : Symbol[];
 
-    constructor(){
+    constructor(public type:Type){
         this.values = [];
     }
 
@@ -14,4 +15,9 @@ export class List{
     public setValue(index: number, value: Symbol){
         this.values[index] = value;
     }
+
+    public append(value: Symbol){
+        this.values.push(value);
+    }
+
 }

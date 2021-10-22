@@ -12,4 +12,6 @@ var Type;
     Type[Type["ARRAY"] = 6] = "ARRAY";
     Type[Type["LIST"] = 7] = "LIST";
     Type[Type["RETURN"] = 8] = "RETURN";
+    Type[Type["BREAK"] = 9] = "BREAK";
+    Type[Type["CONTINUE"] = 10] = "CONTINUE";
 })(Type = exports.Type || (exports.Type = {}));

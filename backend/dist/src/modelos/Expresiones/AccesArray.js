@@ -41,7 +41,12 @@ var AccesArray = /** @class */ (function (_super) {
                     }
                     else {
                         var valoractual = anterior.valor.getValue(index.value);
-                        return { value: valoractual.valor, type: valoractual.type };
+                        if (valoractual) {
+                            return { value: valoractual.valor, type: valoractual.type };
+                        }
+                        else {
+                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "EL INDICE INGRESADO SE ENCUENTRA FUERA DEL LIMITE DEL ARREGLO");
+                        }
                     }
                 }
                 else {

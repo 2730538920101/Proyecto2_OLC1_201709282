@@ -10,7 +10,7 @@ export class NewList extends Expression {
     }
 
     public execute(environment: Environment): Retorno {
-        const array = new List();
-        return { value: array, type: this.type };
+        const array = new List(this.type);
+        return { value: array, type: Type.LIST };
     }
 }

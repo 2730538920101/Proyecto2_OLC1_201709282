@@ -30,7 +30,7 @@ var NewCleanArray = /** @class */ (function (_super) {
         return _this;
     }
     NewCleanArray.prototype.execute = function (environment) {
-        var array = new Array_1.Array();
+        var array = new Array_1.MiArray();
         var value = this.expr.execute(environment);
         if (value.type == Retorno_1.Type.INT) {
             for (var i = 0; i < value.value; i++) {

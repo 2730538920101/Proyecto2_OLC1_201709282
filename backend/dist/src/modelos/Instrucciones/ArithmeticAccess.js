@@ -15,21 +15,25 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NewList = void 0;
-var Expresiones_1 = require("../Abstract/Expresiones");
-var Retorno_1 = require("../Abstract/Retorno");
-var List_1 = require("../Symbol/List");
-var NewList = /** @class */ (function (_super) {
-    __extends(NewList, _super);
-    function NewList(type, line, column) {
+exports.ArithmeticAccess = void 0;
+var Error_1 = require("../Errores/Error");
+var Instrucciones_1 = require("../Abstract/Instrucciones");
+var ArithmeticAccess = /** @class */ (function (_super) {
+    __extends(ArithmeticAccess, _super);
+    function ArithmeticAccess(id, line, column) {
         var _this = _super.call(this, line, column) || this;
-        _this.type = type;
+        _this.id = id;
         return _this;
     }
-    NewList.prototype.execute = function (environment) {
-        var array = new List_1.List(this.type);
-        return { value: array, type: Retorno_1.Type.LIST };
+    ArithmeticAccess.prototype.execute = function (environment) {
+        var value = environment.getVar(this.id);
+        if (value == null) {
+            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO EXISTE");
+        }
+        else {
+            value.valor = Number(value.valor) + 1;
+        }
     };
-    return NewList;
-}(Expresiones_1.Expression));
-exports.NewList = NewList;
+    return ArithmeticAccess;
+}(Instrucciones_1.Instruction));
+exports.ArithmeticAccess = ArithmeticAccess;

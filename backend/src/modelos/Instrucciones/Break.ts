@@ -1,5 +1,6 @@
 import { Instruction } from "../Abstract/Instrucciones";
 import { Environment } from "../Symbol/Enviorment";
+import { Type } from '../Abstract/Retorno';
 
 export class Break extends Instruction{
 
@@ -8,6 +9,6 @@ export class Break extends Instruction{
     }
 
     public execute(environment : Environment) {
-        return {line : this.line, column: this.column, type : 'Break'};
+        return {line : this.line, column: this.column, type : Type.BREAK};
     }
 }

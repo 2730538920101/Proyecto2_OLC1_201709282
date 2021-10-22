@@ -1,6 +1,6 @@
 import { Symbol } from "./Symbol";
 
-export class Array{
+export class MiArray{
     public values : Symbol[];
 
     constructor(){

@@ -31,9 +31,9 @@ var Assigment = /** @class */ (function (_super) {
         var val = this.value.execute(environment);
         if (val != null || val != undefined) {
             for (var i = 0; i < this.id.length; i++) {
-                var iden = this.id[i];
-                if (iden) {
-                    environment.guardar(iden, val.value, val.type);
+                var iden = environment.getVar(this.id[i]);
+                if (iden != null || iden != undefined) {
+                    environment.guardar(this.id[0], val.value, val.type);
                 }
                 else {
                     throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA VARIABLE NO SE ENCUENTRA DECLARADA");
@@ -45,12 +45,18 @@ var Assigment = /** @class */ (function (_super) {
         }
     };
     Assigment.prototype.getType = function (environment) {
-        if ((this.value.execute(environment).type == Retorno_1.Type.ARRAY) || (this.value.execute(environment).type == Retorno_1.Type.LIST)) {
+        if (this.value.execute(environment).type == Retorno_1.Type.ARRAY) {
             return this.value.execute(environment).value.getValue(0).type;
+        }
+        else if (this.value.execute(environment).type == Retorno_1.Type.LIST) {
+            return this.value.execute(environment).value.type;
         }
         else {
             return this.value.execute(environment).type;
         }
+    };
+    Assigment.prototype.getId = function () {
+        return this.id[0];
     };
     return Assigment;
 }(Instrucciones_1.Instruction));
