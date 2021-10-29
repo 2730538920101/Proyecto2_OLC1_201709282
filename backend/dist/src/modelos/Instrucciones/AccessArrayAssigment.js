@@ -59,6 +59,14 @@ var AccessArrayAssigment = /** @class */ (function (_super) {
             }
         }
     };
+    AccessArrayAssigment.prototype.draw = function () {
+        var indexExp = this.index.draw();
+        var expExp = this.value.draw();
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoAccesArrayAssigment" + x.toString();
+        var rama = "\n        " + nombreNodoPrincipal + "[label = \"AccesArrayAssigment\"];\n        nodoid" + nombreNodoPrincipal + "[label = \"ID\"];\n        nodoidval" + nombreNodoPrincipal + "[label = " + this.anterior[0] + "];\n        " + indexExp.rama + "\n        " + expExp.rama + "\n        " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + " -> nodoidval" + nombreNodoPrincipal + ";\n        " + nombreNodoPrincipal + " -> " + indexExp.nodo + ";\n        " + nombreNodoPrincipal + " -> " + expExp.nodo + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return AccessArrayAssigment;
 }(Instrucciones_1.Instruction));
 exports.AccessArrayAssigment = AccessArrayAssigment;

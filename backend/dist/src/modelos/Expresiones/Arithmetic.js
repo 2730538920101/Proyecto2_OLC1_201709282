@@ -136,6 +136,35 @@ var Arithmetic = /** @class */ (function (_super) {
         }
         return result;
     };
+    Arithmetic.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoArithmetic" + x.toString();
+        var izq = this.left.draw();
+        var der = this.right.draw();
+        switch (this.type) {
+            case ArithmeticOption.SUMA:
+                var rama1 = "\n                " + nombreNodoPrincipal + "[label=\"ARITHMETIC\"];\n                operador" + nombreNodoPrincipal + "[label = \"+\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama1, nodo: nombreNodoPrincipal.toString() };
+            case ArithmeticOption.RESTA:
+                var rama2 = "\n                " + nombreNodoPrincipal + "[label=\"ARITHMETIC\"];\n                operador" + nombreNodoPrincipal + "[label = \"-\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama2, nodo: nombreNodoPrincipal.toString() };
+            case ArithmeticOption.MULTIPLICACION:
+                var rama3 = "\n                " + nombreNodoPrincipal + "[label=\"ARITHMETIC\"];\n                operador" + nombreNodoPrincipal + "[label = \"*\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama3, nodo: nombreNodoPrincipal.toString() };
+            case ArithmeticOption.DIVISION:
+                var rama4 = "\n                " + nombreNodoPrincipal + "[label=\"ARITHMETIC\"];\n                operador" + nombreNodoPrincipal + "[label = \"/\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama4, nodo: nombreNodoPrincipal.toString() };
+            case ArithmeticOption.POTENCIA:
+                var rama5 = "\n                " + nombreNodoPrincipal + "[label=\"ARITHMETIC\"];\n                operador" + nombreNodoPrincipal + "[label = \"\u02C6\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama5, nodo: nombreNodoPrincipal.toString() };
+            case ArithmeticOption.MODULO:
+                var rama6 = "\n                " + nombreNodoPrincipal + "[label=\"ARITHMETIC\"];\n                operador" + nombreNodoPrincipal + "[label = \"%\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama6, nodo: nombreNodoPrincipal.toString() };
+            case ArithmeticOption.UNARIO:
+                var rama7 = "\n                " + nombreNodoPrincipal + "[label=\"ARITHMETIC\"];\n                operador" + nombreNodoPrincipal + "[label = \"-\"];\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama7, nodo: nombreNodoPrincipal.toString() };
+        }
+    };
     return Arithmetic;
 }(Expresiones_1.Expression));
 exports.Arithmetic = Arithmetic;

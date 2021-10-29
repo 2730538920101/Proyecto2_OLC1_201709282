@@ -35,7 +35,24 @@ export class AccessArrayAssigment extends Instruction {
             }else{
                 throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA VARIABLE NO SE ENCUENTRA DECLARADA");
             }
-        }
-        
+        } 
+    }
+
+    public draw() : {rama : string, nodo: string}{
+        const indexExp:{rama: string, nodo: string} = this.index.draw();
+        const expExp:{rama: string, nodo: string} = this.value.draw();
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoAccesArrayAssigment"+x.toString();
+        const rama = `
+        ${nombreNodoPrincipal}[label = "AccesArrayAssigment"];
+        nodoid${nombreNodoPrincipal}[label = "ID"];
+        nodoidval${nombreNodoPrincipal}[label = ${this.anterior[0]}];
+        ${indexExp.rama}
+        ${expExp.rama}
+        ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal} -> nodoidval${nombreNodoPrincipal};
+        ${nombreNodoPrincipal} -> ${indexExp.nodo};
+        ${nombreNodoPrincipal} -> ${expExp.nodo};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
     }
 }

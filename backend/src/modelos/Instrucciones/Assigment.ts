@@ -42,4 +42,18 @@ export class Assigment extends Instruction{
         return this.id[0];
     }
 
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoAssigment"+x.toString();
+        const expExp:{rama: string, nodo: string} = this.value.draw();
+        const rama = `
+        ${nombreNodoPrincipal}[label="ASSIGMENT"];
+        nodoid${nombreNodoPrincipal}[label="ID"];
+        nodoidval${nombreNodoPrincipal}[label="${this.getId()}"];
+        ${expExp.rama}
+        ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal} -> nodoidval${nombreNodoPrincipal};
+        ${nombreNodoPrincipal} -> ${expExp.nodo};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+    }
 }

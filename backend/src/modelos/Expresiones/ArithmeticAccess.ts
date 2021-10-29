@@ -23,4 +23,16 @@ export class ArithmeticAccess extends Expression{
                 return {value: value.valor, type: value.type};
             }
     }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoArithmeticAccess"+x.toString();
+        const rama = `
+        ${nombreNodoPrincipal}[label="ArithmeticAccess"];
+        nodoid${nombreNodoPrincipal}[label="ID++"];
+        nodoidval${nombreNodoPrincipal}[label="${this.id}"];
+        ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal} -> nodoidval${nombreNodoPrincipal};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+    }
 }

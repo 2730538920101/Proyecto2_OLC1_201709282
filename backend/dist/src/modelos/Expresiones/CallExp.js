@@ -251,6 +251,56 @@ var CallExp = /** @class */ (function (_super) {
                 }
         }
     };
+    CallExp.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoCallExp" + x.toString();
+        switch (this.type) {
+            case TypeCallExp.GETVALUE:
+                var expExp = this.expresiones[0].draw();
+                var rama1 = "\n                " + nombreNodoPrincipal + "[label=\"GETVALUE\"];\n                nodoid" + nombreNodoPrincipal + "[label=\"getValue\"];\n                nodoparam" + nombreNodoPrincipal + "[label=\"ID\"];\n                nodoparamval" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n                " + expExp.rama + "\n                " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> nodoparam" + nombreNodoPrincipal + " -> nodoparamval" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + expExp.nodo + ";\n                ";
+                return { rama: rama1, nodo: nombreNodoPrincipal.toString() };
+            case TypeCallExp.TOLOWER:
+                var expExp2 = this.expresiones[0].draw();
+                var rama2 = "\n                " + nombreNodoPrincipal + "[label=\"TOLOWER\"];\n                nodoid" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n                " + expExp2.rama + "\n                " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + expExp2.nodo + ";\n                ";
+                return { rama: rama2, nodo: nombreNodoPrincipal.toString() };
+            case TypeCallExp.TOUPPER:
+                var expExp3 = this.expresiones[0].draw();
+                var rama3 = "\n                " + nombreNodoPrincipal + "[label=\"TOUPPER\"];\n                nodoid" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n                " + expExp3.rama + "\n                " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + expExp3.nodo + ";\n                ";
+                return { rama: rama3, nodo: nombreNodoPrincipal.toString() };
+            case TypeCallExp.LENGTH:
+                var expExp4 = this.expresiones[0].draw();
+                var rama4 = "\n                " + nombreNodoPrincipal + "[label=\"LENGTH\"];\n                nodoid" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n                " + expExp4.rama + "\n                " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + expExp4.nodo + ";\n                ";
+                return { rama: rama4, nodo: nombreNodoPrincipal.toString() };
+            case TypeCallExp.TRUNCATE:
+                var expExp5 = this.expresiones[0].draw();
+                var rama5 = "\n                " + nombreNodoPrincipal + "[label=\"TRUNCATE\"];\n                nodoid" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n                " + expExp5.rama + "\n                " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + expExp5.nodo + ";\n                ";
+                return { rama: rama5, nodo: nombreNodoPrincipal.toString() };
+            case TypeCallExp.ROUND:
+                var expExp6 = this.expresiones[0].draw();
+                var rama6 = "\n                " + nombreNodoPrincipal + "[label=\"ROUND\"];\n                nodoid" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n                " + expExp6.rama + "\n                " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + expExp6.nodo + ";\n                ";
+                return { rama: rama6, nodo: nombreNodoPrincipal.toString() };
+            case TypeCallExp.TOSTRING:
+                var expExp7 = this.expresiones[0].draw();
+                var rama7 = "\n                " + nombreNodoPrincipal + "[label=\"TOSTRING\"];\n                nodoid" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n                " + expExp7.rama + "\n                " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + expExp7.nodo + ";\n                ";
+                return { rama: rama7, nodo: nombreNodoPrincipal.toString() };
+            case TypeCallExp.TOCHARARRAY:
+                var expExp8 = this.expresiones[0].draw();
+                var rama8 = "\n                " + nombreNodoPrincipal + "[label=\"TOCHARARRAY\"];\n                nodoid" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n                " + expExp8.rama + "\n                " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + expExp8.nodo + ";\n                ";
+                return { rama: rama8, nodo: nombreNodoPrincipal.toString() };
+            case TypeCallExp.TYPEOF:
+                var expExp9 = this.expresiones[0].draw();
+                var rama9 = "\n                " + nombreNodoPrincipal + "[label=\"TYPEOF\"];\n                nodoid" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n                " + expExp9.rama + "\n                " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + expExp9.nodo + ";\n                ";
+                return { rama: rama9, nodo: nombreNodoPrincipal.toString() };
+            case TypeCallExp.DECLARED:
+                var params2 = "";
+                for (var i = 0; i < this.expresiones.length; i++) {
+                    var actual = this.expresiones[i].draw();
+                    params2 = params2 + ("\n                    nodoparam" + nombreNodoPrincipal + i + "[label=\"PARAMETRO\"];\n                    " + actual.rama + "\n                    " + nombreNodoPrincipal + " -> nodoparam" + nombreNodoPrincipal + i + " -> " + actual.nodo + ";\n                    ");
+                }
+                var rama10 = "\n                " + nombreNodoPrincipal + "[label=\"DECLARED\"];\n                nodoid" + nombreNodoPrincipal + "[label=\"ID\"];\n                nodoidval" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n                " + params2 + "\n                " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + " -> nodoidval" + nombreNodoPrincipal + ";\n                ";
+                return { rama: rama10, nodo: nombreNodoPrincipal.toString() };
+        }
+    };
     return CallExp;
 }(Instrucciones_1.Instruction));
 exports.CallExp = CallExp;

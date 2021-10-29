@@ -4,8 +4,9 @@ const { errores } = require('../../dist/src/modelos/Errores/ErrorList');
 const { MiError, TypeError} = require('../../dist/src/modelos/Errores/Error');
 const { Function } = require('../../dist/src/modelos/Instrucciones/Function');
 const { Environment } = require('../../dist/src/modelos/Symbol/Enviorment');
+const { prints } = require('../../dist/src/modelos/Reportes/Impresiones');
+const { TablaSim } = require('../../dist/src/modelos/Reportes/TablaSimbolos');
 const router = express.Router();
-
 router.get('/', (req,res)=>{
     res.send(req.body.response);
 });
@@ -18,6 +19,9 @@ router.post('/', (req, res)=>{
         "code": code
     }
     try{
+        let drawast = ``;
+        TablaSim.splice(0,TablaSim.length);
+        prints.splice(0,prints.length);
         errores.splice(0,errores.length);
         const analisis = gram.parse(code);
         const env = new Environment(null);
@@ -42,8 +46,25 @@ router.post('/', (req, res)=>{
                 errores.push(error);  
             }
         }
+        drawast = drawast + `
+        digraph G{
+            nodoPrincipal[label="AST"];
+        `;
+        for(let i = 0; i < analisis.length; i++){
+            const inst= analisis[i].draw();
+            drawast = drawast + `
+            ${inst.rama}
+            nodoPrincipal -> ${inst.nodo};
+            `;
+        }
+        drawast = drawast + `}`;
+        
         const result = {
-            "resultado":analisis
+            "resultado":analisis,
+            "prints": prints,
+            "errores": errores,
+            "tablasimbolos": TablaSim,
+            "ast":drawast
         }
         res.send(result)
 

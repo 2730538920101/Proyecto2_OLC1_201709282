@@ -42,6 +42,13 @@ var NewCleanArray = /** @class */ (function (_super) {
             throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE HA PODIDO INSTANCIAR EL ARREGLO PORQUE LA EXPRESION ENTRE LAS LLAVES NO ES UN NUMERO");
         }
     };
+    NewCleanArray.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoNewCleanArray" + x.toString();
+        var cant = this.expr.draw();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"Array\"];\n        tipodato" + nombreNodoPrincipal + "[label=\"TIPO DE DATO\"];\n        tipodatoval" + nombreNodoPrincipal + "[label=\"" + this.type.toString() + "\"];\n        " + cant.rama + "\n        " + nombreNodoPrincipal + " -> tipodato" + nombreNodoPrincipal + " -> tipodatoval" + nombreNodoPrincipal + ";\n        " + nombreNodoPrincipal + " -> " + cant.nodo + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return NewCleanArray;
 }(Expresiones_1.Expression));
 exports.NewCleanArray = NewCleanArray;

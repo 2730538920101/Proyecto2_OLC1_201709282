@@ -23,4 +23,19 @@ export class NewCleanArray extends Expression {
             throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO SE HA PODIDO INSTANCIAR EL ARREGLO PORQUE LA EXPRESION ENTRE LAS LLAVES NO ES UN NUMERO");
         }
     }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoNewCleanArray"+x.toString();
+        const cant:{rama:string, nodo:string} = this.expr.draw();
+        const rama = `
+        ${nombreNodoPrincipal}[label="Array"];
+        tipodato${nombreNodoPrincipal}[label="TIPO DE DATO"];
+        tipodatoval${nombreNodoPrincipal}[label="${this.type.toString()}"];
+        ${cant.rama}
+        ${nombreNodoPrincipal} -> tipodato${nombreNodoPrincipal} -> tipodatoval${nombreNodoPrincipal};
+        ${nombreNodoPrincipal} -> ${cant.nodo};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+    }
 }

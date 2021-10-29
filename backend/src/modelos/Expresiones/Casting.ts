@@ -41,7 +41,21 @@ export class Casting extends Expression{
             default:
                 throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO SE PUEDE REALIZAR EL CASTING DEL TIPO "+ this.changeTo);
 
-        }
-        
+        }  
+    }
+    
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoCasting"+x.toString();
+        const valor: {rama: string, nodo: string} = this.value.draw(); 
+        const rama = `
+        ${nombreNodoPrincipal}[label="CASTING"];
+        tipodato${nombreNodoPrincipal}[label="TIPO DE DATO"];
+        tipodatoval${nombreNodoPrincipal}[label="${this.changeTo.toString()}"];
+        ${valor.rama}
+        ${nombreNodoPrincipal} -> tipodato${nombreNodoPrincipal} -> tipodatoval${nombreNodoPrincipal};
+        ${nombreNodoPrincipal} -> ${valor.nodo};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
     }
 }

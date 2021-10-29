@@ -195,6 +195,125 @@ export class CallExp extends Instruction{
                     }else{
                         throw new MiError(this.line, this.column, TypeError.SEMANTICO, "EL PRIMER PARAMETRO QUE RECIBE LA FUNCION GETVALUE DEBE SER UNA VARIABLE DE TIPO DYNAMIC LIST");
                     }     
+        } 
+    }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoCallExp"+x.toString();
+        switch(this.type){
+            case TypeCallExp.GETVALUE:
+                const expExp: {rama:string, nodo:string} = this.expresiones[0].draw();
+                const rama1 = `
+                ${nombreNodoPrincipal}[label="GETVALUE"];
+                nodoid${nombreNodoPrincipal}[label="getValue"];
+                nodoparam${nombreNodoPrincipal}[label="ID"];
+                nodoparamval${nombreNodoPrincipal}[label="${this.id}"];
+                ${expExp.rama}
+                ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> nodoparam${nombreNodoPrincipal} -> nodoparamval${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${expExp.nodo};
+                `;
+                return {rama: rama1, nodo: nombreNodoPrincipal.toString()};
+            case TypeCallExp.TOLOWER:
+                const expExp2: {rama:string, nodo:string} = this.expresiones[0].draw();
+                const rama2 = `
+                ${nombreNodoPrincipal}[label="TOLOWER"];
+                nodoid${nombreNodoPrincipal}[label="${this.id}"];
+                ${expExp2.rama}
+                ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${expExp2.nodo};
+                `;
+                return {rama: rama2, nodo: nombreNodoPrincipal.toString()};
+            case TypeCallExp.TOUPPER:
+                const expExp3: {rama:string, nodo:string} = this.expresiones[0].draw();
+                const rama3 = `
+                ${nombreNodoPrincipal}[label="TOUPPER"];
+                nodoid${nombreNodoPrincipal}[label="${this.id}"];
+                ${expExp3.rama}
+                ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${expExp3.nodo};
+                `;
+                return {rama: rama3, nodo: nombreNodoPrincipal.toString()};
+            case TypeCallExp.LENGTH:
+                const expExp4: {rama:string, nodo:string} = this.expresiones[0].draw();
+                const rama4 = `
+                ${nombreNodoPrincipal}[label="LENGTH"];
+                nodoid${nombreNodoPrincipal}[label="${this.id}"];
+                ${expExp4.rama}
+                ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${expExp4.nodo};
+                `;
+                return {rama: rama4, nodo: nombreNodoPrincipal.toString()};
+            case TypeCallExp.TRUNCATE:
+                const expExp5: {rama:string, nodo:string} = this.expresiones[0].draw();
+                const rama5 = `
+                ${nombreNodoPrincipal}[label="TRUNCATE"];
+                nodoid${nombreNodoPrincipal}[label="${this.id}"];
+                ${expExp5.rama}
+                ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${expExp5.nodo};
+                `;
+                return {rama: rama5, nodo: nombreNodoPrincipal.toString()};
+            case TypeCallExp.ROUND:
+                const expExp6: {rama:string, nodo:string} = this.expresiones[0].draw();
+                const rama6 = `
+                ${nombreNodoPrincipal}[label="ROUND"];
+                nodoid${nombreNodoPrincipal}[label="${this.id}"];
+                ${expExp6.rama}
+                ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${expExp6.nodo};
+                `;
+                return {rama: rama6, nodo: nombreNodoPrincipal.toString()};
+            case TypeCallExp.TOSTRING:
+                const expExp7: {rama:string, nodo:string} = this.expresiones[0].draw();
+                const rama7 = `
+                ${nombreNodoPrincipal}[label="TOSTRING"];
+                nodoid${nombreNodoPrincipal}[label="${this.id}"];
+                ${expExp7.rama}
+                ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${expExp7.nodo};
+                `;
+                return {rama: rama7, nodo: nombreNodoPrincipal.toString()};
+            case TypeCallExp.TOCHARARRAY:
+                const expExp8: {rama:string, nodo:string} = this.expresiones[0].draw();
+                const rama8 = `
+                ${nombreNodoPrincipal}[label="TOCHARARRAY"];
+                nodoid${nombreNodoPrincipal}[label="${this.id}"];
+                ${expExp8.rama}
+                ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${expExp8.nodo};
+                `;
+                return {rama: rama8, nodo: nombreNodoPrincipal.toString()};
+            case TypeCallExp.TYPEOF:
+                const expExp9: {rama:string, nodo:string} = this.expresiones[0].draw();
+                const rama9 = `
+                ${nombreNodoPrincipal}[label="TYPEOF"];
+                nodoid${nombreNodoPrincipal}[label="${this.id}"];
+                ${expExp9.rama}
+                ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${expExp9.nodo};
+                `;
+                return {rama: rama9, nodo: nombreNodoPrincipal.toString()};
+            case TypeCallExp.DECLARED:
+                let params2 = ``;
+                for(let i = 0; i < this.expresiones.length; i ++){
+                    let actual:{rama: string, nodo: string} = this.expresiones[i].draw();
+                    params2 = params2 + `
+                    nodoparam${nombreNodoPrincipal}${i}[label="PARAMETRO"];
+                    ${actual.rama}
+                    ${nombreNodoPrincipal} -> nodoparam${nombreNodoPrincipal}${i} -> ${actual.nodo};
+                    `; 
+                }
+                
+                const rama10 = `
+                ${nombreNodoPrincipal}[label="DECLARED"];
+                nodoid${nombreNodoPrincipal}[label="ID"];
+                nodoidval${nombreNodoPrincipal}[label="${this.id}"];
+                ${params2}
+                ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal} -> nodoidval${nombreNodoPrincipal};
+                `;
+                return {rama: rama10, nodo: nombreNodoPrincipal.toString()};
         }
         
     }

@@ -33,4 +33,19 @@ export class While extends Instruction{
             }
         }
     }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoWhile"+x.toString();
+        const condicion: {rama: string, nodo: string} = this.condition.draw();
+        const inst: {rama: string, nodo: string} = this.code.draw(); 
+        const rama = `
+        ${nombreNodoPrincipal}[label="WHILE"];
+        ${condicion.rama}
+        ${inst.rama}
+        ${nombreNodoPrincipal} -> ${condicion.nodo};
+        ${nombreNodoPrincipal} -> ${inst.nodo};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+    }
 }

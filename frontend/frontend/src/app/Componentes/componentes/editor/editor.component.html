@@ -41,7 +41,10 @@
     </mat-grid-list>
 </div>
 <div class="footer-app">
-    <button class="boton-foot" mat-raised-button color="primary">Reporte AST</button>
-    <button class="boton-foot" mat-raised-button color="accent">Ver Tabla De Simbolos</button>
-    <button class="boton-foot" mat-raised-button color="primary">Ver Tabla De Errores</button>
+    <button  class="boton-foot" mat-raised-button color="primary" (click)="GenerarAST()">Reporte AST</button>
+    <button  class="boton-foot" mat-raised-button color="accent" (click)="GenerarTabla()">Ver Tabla De Simbolos</button>
+    <button  class="boton-foot" mat-raised-button color="primary" (click)="GenerarErrores()">Ver Tabla De Errores</button>
 </div>
+<router-outlet></router-outlet>
+
+

@@ -47,6 +47,15 @@ var Ternary = /** @class */ (function (_super) {
             return { value: null, type: Retorno_1.Type.NULL };
         }
     };
+    Ternary.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoTernary" + x.toString();
+        var cond = this.condicion.draw();
+        var r1 = this.retorno.draw();
+        var r2 = this.retorno2.draw();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"Ternary\"];\n        " + cond.rama + "\n        " + r1.rama + "\n        " + r2.rama + "\n        " + nombreNodoPrincipal + " -> " + cond.nodo + ";\n        " + nombreNodoPrincipal + " -> " + r1.nodo + ";\n        " + nombreNodoPrincipal + " -> " + r2.nodo + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Ternary;
 }(Expresiones_1.Expression));
 exports.Ternary = Ternary;

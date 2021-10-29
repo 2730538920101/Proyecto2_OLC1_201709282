@@ -7,6 +7,7 @@ import { ComponentesModule } from './Componentes/componentes/componentes.module'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //MODULOS EXTERNOS
 import { HttpClientModule } from '@angular/common/http';
+import { AppRouterModule } from './app-router.module';
 
 
 
@@ -19,7 +20,8 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     ComponentesModule,
     BrowserAnimationsModule,
-    HttpClientModule 
+    HttpClientModule,
+    AppRouterModule 
   ],
   providers: [],
   bootstrap: [AppComponent]

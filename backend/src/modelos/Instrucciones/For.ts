@@ -37,4 +37,25 @@ export class For extends Instruction{
             throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA CONDICION DEBE RETORNAR UN VALOR DE TIPO BOOLEANO");
         }
     }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoFor"+x.toString();
+        const assig: {rama: string, nodo: string} = this.asignacion.draw();
+        const cond: {rama: string, nodo: string} = this.condicion.draw();
+        const inc: {rama: string, nodo: string} = this.incremento.draw();
+        const inst: {rama: string, nodo: string} = this.code.draw(); 
+        const rama = `
+        ${nombreNodoPrincipal}[label="FOR"];
+        ${assig.rama}
+        ${cond.rama}
+        ${inc.rama}
+        ${inst.rama}
+        ${nombreNodoPrincipal} -> ${assig.nodo};
+        ${nombreNodoPrincipal} -> ${cond.nodo};
+        ${nombreNodoPrincipal} -> ${inc.nodo};
+        ${nombreNodoPrincipal} -> ${inst.nodo};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+    }
 }

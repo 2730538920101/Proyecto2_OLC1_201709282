@@ -35,6 +35,12 @@ var ArithmeticAccessI2 = /** @class */ (function (_super) {
             environment.guardar(this.id, value.valor, value.type);
         }
     };
+    ArithmeticAccessI2.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoArithmeticAccessI2" + x.toString();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"ArithmeticAccessI2\"];\n        nodoid" + nombreNodoPrincipal + "[label=\"ID--\"];\n        nodoidval" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n        " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + " -> nodoidval" + nombreNodoPrincipal + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return ArithmeticAccessI2;
 }(Instrucciones_1.Instruction));
 exports.ArithmeticAccessI2 = ArithmeticAccessI2;

@@ -34,6 +34,13 @@ var Return = /** @class */ (function (_super) {
             return { value: null, type: Retorno_1.Type.RETURN };
         }
     };
+    Return.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoReturn" + x.toString();
+        var valor = this.expr.draw();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"RETURN\"];\n        " + valor.rama + "\n        " + nombreNodoPrincipal + " -> " + valor.nodo + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Return;
 }(Instrucciones_1.Instruction));
 exports.Return = Return;

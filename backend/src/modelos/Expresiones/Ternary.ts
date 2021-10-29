@@ -23,8 +23,25 @@ export class Ternary extends Expression{
             }
         }else{
             return {value:null, type: Type.NULL};
-        }
-        
+        } 
+    }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoTernary"+x.toString();
+        const cond: {rama:string, nodo:string} = this.condicion.draw();
+        const r1: {rama:string, nodo:string} = this.retorno.draw();
+        const r2: {rama:string, nodo:string} = this.retorno2.draw();
+        const rama = `
+        ${nombreNodoPrincipal}[label="Ternary"];
+        ${cond.rama}
+        ${r1.rama}
+        ${r2.rama}
+        ${nombreNodoPrincipal} -> ${cond.nodo};
+        ${nombreNodoPrincipal} -> ${r1.nodo};
+        ${nombreNodoPrincipal} -> ${r2.nodo};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
     }
 }
 

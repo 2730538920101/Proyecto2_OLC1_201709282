@@ -11,4 +11,13 @@ export class Break extends Instruction{
     public execute(environment : Environment) {
         return {line : this.line, column: this.column, type : Type.BREAK};
     }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoBreak"+x.toString();
+        const rama = `
+        ${nombreNodoPrincipal}[label="BREAK"];
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+    }
 }

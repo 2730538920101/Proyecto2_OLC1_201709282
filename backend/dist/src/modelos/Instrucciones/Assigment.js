@@ -58,6 +58,13 @@ var Assigment = /** @class */ (function (_super) {
     Assigment.prototype.getId = function () {
         return this.id[0];
     };
+    Assigment.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoAssigment" + x.toString();
+        var expExp = this.value.draw();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"ASSIGMENT\"];\n        nodoid" + nombreNodoPrincipal + "[label=\"ID\"];\n        nodoidval" + nombreNodoPrincipal + "[label=\"" + this.getId() + "\"];\n        " + expExp.rama + "\n        " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + " -> nodoidval" + nombreNodoPrincipal + ";\n        " + nombreNodoPrincipal + " -> " + expExp.nodo + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Assigment;
 }(Instrucciones_1.Instruction));
 exports.Assigment = Assigment;

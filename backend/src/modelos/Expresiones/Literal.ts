@@ -22,4 +22,15 @@ export class Literal extends Expression{
             return {value : null , type : Type.NULL};
         }
     }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoLiteral"+x.toString();
+        const rama = `
+        ${nombreNodoPrincipal}[label="LITERAL"];
+        nodoliteral${nombreNodoPrincipal}[label="${this.value.toString()}"];
+        ${nombreNodoPrincipal} -> nodoliteral${nombreNodoPrincipal};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+    }
 }

@@ -50,6 +50,21 @@ var Declaration = /** @class */ (function (_super) {
             }
         }
     };
+    Declaration.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoDeclaration" + x.toString();
+        try {
+            var assigval2 = this.asignacion.draw();
+            var assigval = "";
+            assigval = assigval + assigval2.rama + ("\n            " + nombreNodoPrincipal + " -> " + assigval2.nodo + ";\n            ");
+            var rama = "\n            " + nombreNodoPrincipal + "[label=\"DECLARATION\"];\n            nodotipo" + nombreNodoPrincipal + "[label=\"TIPO DE DATO\"];\n            nodotipoval" + nombreNodoPrincipal + "[label=\"" + this.type.toString() + "\"];\n            " + assigval + "\n            " + nombreNodoPrincipal + " -> nodotipo" + nombreNodoPrincipal + " -> nodotipoval" + nombreNodoPrincipal + ";\n            ";
+            return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+        }
+        catch (e) {
+            var rama = "\n            " + nombreNodoPrincipal + "[label=\"DECLARATION\"];\n            nodotipo" + nombreNodoPrincipal + "[label=\"TIPO DE DATO\"];\n            nodotipoval" + nombreNodoPrincipal + "[label=\"" + this.type.toString() + "\"];\n            " + nombreNodoPrincipal + " -> nodotipo" + nombreNodoPrincipal + " -> nodotipoval" + nombreNodoPrincipal + ";\n            ";
+            return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+        }
+    };
     return Declaration;
 }(Instrucciones_1.Instruction));
 exports.Declaration = Declaration;

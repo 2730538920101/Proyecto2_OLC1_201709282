@@ -26,6 +26,12 @@ var Break = /** @class */ (function (_super) {
     Break.prototype.execute = function (environment) {
         return { line: this.line, column: this.column, type: Retorno_1.Type.BREAK };
     };
+    Break.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoBreak" + x.toString();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"BREAK\"];\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Break;
 }(Instrucciones_1.Instruction));
 exports.Break = Break;

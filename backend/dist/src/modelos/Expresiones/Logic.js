@@ -52,6 +52,23 @@ var Logic = /** @class */ (function (_super) {
             return { value: null, type: Retorno_1.Type.NULL };
         }
     };
+    Logic.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoLogic" + x.toString();
+        var izq = this.left.draw();
+        var der = this.right.draw();
+        switch (this.type) {
+            case LogicOption.AND:
+                var rama1 = "\n                " + nombreNodoPrincipal + "[label=\"LOGIC\"];\n                operador" + nombreNodoPrincipal + "[label = \"&&\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama1, nodo: nombreNodoPrincipal.toString() };
+            case LogicOption.OR:
+                var rama2 = "\n                " + nombreNodoPrincipal + "[label=\"LOGIC\"];\n                operador" + nombreNodoPrincipal + "[label = \"||\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama2, nodo: nombreNodoPrincipal.toString() };
+            case LogicOption.NOT:
+                var rama3 = "\n                " + nombreNodoPrincipal + "[label=\"LOGIC\"];\n                operador" + nombreNodoPrincipal + "[label = \"!\"];\n                " + izq.rama + "\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                ";
+                return { rama: rama3, nodo: nombreNodoPrincipal.toString() };
+        }
+    };
     return Logic;
 }(Expresiones_1.Expression));
 exports.Logic = Logic;

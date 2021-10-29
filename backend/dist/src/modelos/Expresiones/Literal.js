@@ -46,6 +46,12 @@ var Literal = /** @class */ (function (_super) {
             return { value: null, type: Retorno_1.Type.NULL };
         }
     };
+    Literal.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoLiteral" + x.toString();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"LITERAL\"];\n        nodoliteral" + nombreNodoPrincipal + "[label=\"" + this.value.toString() + "\"];\n        " + nombreNodoPrincipal + " -> nodoliteral" + nombreNodoPrincipal + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Literal;
 }(Expresiones_1.Expression));
 exports.Literal = Literal;

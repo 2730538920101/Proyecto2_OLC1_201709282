@@ -1,5 +1,4 @@
 import { Instruction } from '../Abstract/Instrucciones';
-import { Assigment } from './Assigment';
 import { Environment } from '../Symbol/Enviorment';
 import { MiError, TypeError } from '../Errores/Error';
 import { Type } from '../Abstract/Retorno';
@@ -29,4 +28,33 @@ export class Declaration extends Instruction{
             }
         }
     }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoDeclaration"+x.toString();
+        try{
+            const assigval2: {rama: string, nodo: string} = this.asignacion.draw();
+            let assigval = ``;
+            assigval = assigval + assigval2.rama + `
+            ${nombreNodoPrincipal} -> ${assigval2.nodo};
+            `;
+            const rama = `
+            ${nombreNodoPrincipal}[label="DECLARATION"];
+            nodotipo${nombreNodoPrincipal}[label="TIPO DE DATO"];
+            nodotipoval${nombreNodoPrincipal}[label="${this.type.toString()}"];
+            ${assigval}
+            ${nombreNodoPrincipal} -> nodotipo${nombreNodoPrincipal} -> nodotipoval${nombreNodoPrincipal};
+            `;
+            return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+        }catch(e){
+            const rama = `
+            ${nombreNodoPrincipal}[label="DECLARATION"];
+            nodotipo${nombreNodoPrincipal}[label="TIPO DE DATO"];
+            nodotipoval${nombreNodoPrincipal}[label="${this.type.toString()}"];
+            ${nombreNodoPrincipal} -> nodotipo${nombreNodoPrincipal} -> nodotipoval${nombreNodoPrincipal};
+            `;
+            return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+        }    
+    }
 }
+

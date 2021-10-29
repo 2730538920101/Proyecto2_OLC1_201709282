@@ -63,6 +63,17 @@ var Switch = /** @class */ (function (_super) {
             }
         }
     };
+    Switch.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoSwitch" + x.toString();
+        var expExp = this.cambio.draw();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"SWITCH\"];\n        " + expExp.rama + "\n        " + nombreNodoPrincipal + " -> " + expExp.nodo + ";\n        ";
+        for (var i = 0; i < this.casos.length; i++) {
+            var caso = this.casos[i].draw();
+            rama = rama + ("\n            " + caso.rama + "\n            " + nombreNodoPrincipal + " -> " + caso.nodo + ";\n            ");
+        }
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Switch;
 }(Instrucciones_1.Instruction));
 exports.Switch = Switch;

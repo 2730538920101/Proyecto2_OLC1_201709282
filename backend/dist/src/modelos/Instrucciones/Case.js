@@ -34,6 +34,20 @@ var Case = /** @class */ (function (_super) {
     Case.prototype.getExp = function () {
         return this.exp;
     };
+    Case.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoCase" + x.toString();
+        var inst = this.code.draw();
+        if (this.exp != null) {
+            var expExp = this.exp.draw();
+            var rama = "\n            " + nombreNodoPrincipal + "[label=\"CASE\"];\n            " + expExp.rama + "\n            " + inst.rama + "\n            " + nombreNodoPrincipal + " -> " + expExp.nodo + ";\n            " + nombreNodoPrincipal + " -> " + inst.nodo + ";\n            ";
+            return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+        }
+        else {
+            var rama = "\n            " + nombreNodoPrincipal + "[label=\"DEFAULT\"];\n            " + inst.rama + "\n            " + nombreNodoPrincipal + " -> " + inst.nodo + "\n            ";
+            return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+        }
+    };
     return Case;
 }(Instrucciones_1.Instruction));
 exports.Case = Case;

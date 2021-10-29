@@ -171,21 +171,19 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 /lex
 
 //DEFINIR PRECEDENCIA DE LOS OPERADORES
-
-%nonassoc       '(' , ')'
-%right          '-'
-%nonassoc       'ˆ'
-%left           '/','*'
-%left           '+','-'
+%right          '++','--'
 %left           '?'
 %left           ':'
-%left           '==','!=','<','<=','>','>='
-%right          '!'
-%left           '&&'
 %left           '||'
+%left           '&&'
+%right          '!'
+%left           '==','!=','<','<=','>','>='
 %left           '%'
-%right          '++','--'
-
+%left           '+','-'
+%left           '/','*'
+%nonassoc       'ˆ'
+%right          '-'
+%nonassoc       '(' , ')'
 
 
 

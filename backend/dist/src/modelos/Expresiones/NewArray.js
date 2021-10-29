@@ -47,6 +47,16 @@ var NewArray = /** @class */ (function (_super) {
             throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LOS ELEMENTOS DEL ARRAY DEBEN SER DEL MISMO TIPO");
         }
     };
+    NewArray.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoNewArray" + x.toString();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"Array\"];\n        ";
+        this.listExpr.forEach(function (exp) {
+            var expExp = exp.draw();
+            rama = rama + ("\n            " + expExp.rama + "\n            " + nombreNodoPrincipal + " -> " + expExp.nodo + ";\n            ");
+        });
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return NewArray;
 }(Expresiones_1.Expression));
 exports.NewArray = NewArray;

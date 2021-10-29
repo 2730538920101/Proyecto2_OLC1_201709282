@@ -67,6 +67,32 @@ var Relational = /** @class */ (function (_super) {
             return { value: null, type: Retorno_1.Type.NULL };
         }
     };
+    Relational.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoRelational" + x.toString();
+        var izq = this.left.draw();
+        var der = this.right.draw();
+        switch (this.type) {
+            case RelationalOption.DIFERENCIA:
+                var rama1 = "\n                " + nombreNodoPrincipal + "[label=\"RELATIONAL\"];\n                operador" + nombreNodoPrincipal + "[label = \"!=\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama1, nodo: nombreNodoPrincipal.toString() };
+            case RelationalOption.IGUAL_IGUAL:
+                var rama2 = "\n                " + nombreNodoPrincipal + "[label=\"RELATIONAL\"];\n                operador" + nombreNodoPrincipal + "[label = \"==\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama2, nodo: nombreNodoPrincipal.toString() };
+            case RelationalOption.MAYOR:
+                var rama3 = "\n                " + nombreNodoPrincipal + "[label=\"RELATIONAL\"];\n                operador" + nombreNodoPrincipal + "[label = \">\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama3, nodo: nombreNodoPrincipal.toString() };
+            case RelationalOption.MAYOR_IGUAL:
+                var rama4 = "\n                " + nombreNodoPrincipal + "[label=\"RELATIONAL\"];\n                operador" + nombreNodoPrincipal + "[label = \">=\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama4, nodo: nombreNodoPrincipal.toString() };
+            case RelationalOption.MENOR:
+                var rama5 = "\n                " + nombreNodoPrincipal + "[label=\"RELATIONAL\"];\n                operador" + nombreNodoPrincipal + "[label = \"<\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama5, nodo: nombreNodoPrincipal.toString() };
+            case RelationalOption.MENOR_IGUAL:
+                var rama6 = "\n                " + nombreNodoPrincipal + "[label=\"RELATIONAL\"];\n                operador" + nombreNodoPrincipal + "[label = \"<=\"];\n                " + izq.rama + "\n                " + der.rama + "\n                " + nombreNodoPrincipal + " -> " + izq.nodo + ";\n                " + nombreNodoPrincipal + " -> operador" + nombreNodoPrincipal + ";\n                " + nombreNodoPrincipal + " -> " + der.nodo + ";\n                ";
+                return { rama: rama6, nodo: nombreNodoPrincipal.toString() };
+        }
+    };
     return Relational;
 }(Expresiones_1.Expression));
 exports.Relational = Relational;

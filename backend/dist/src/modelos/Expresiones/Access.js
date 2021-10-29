@@ -34,6 +34,12 @@ var Access = /** @class */ (function (_super) {
             return { value: value.valor, type: value.type };
         }
     };
+    Access.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoAccess" + x.toString();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"Access\"];\n        nodoaccess" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n        " + nombreNodoPrincipal + " -> nodoaccess" + nombreNodoPrincipal + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Access;
 }(Expresiones_1.Expression));
 exports.Access = Access;

@@ -1,7 +1,7 @@
 import { Instruction } from "../Abstract/Instrucciones";
 import { Expression } from '../Abstract/Expresiones';
 import { Environment } from "../Symbol/Enviorment";
-import { Type } from "../Abstract/Retorno";
+
 
 
 
@@ -19,6 +19,30 @@ export class Case extends Instruction{
 
     public getExp():Expression|null{
         return this.exp;
+    }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoCase"+x.toString();
+        const inst: {rama: string, nodo: string} = this.code.draw();
+        if(this.exp != null){
+            const expExp: {rama: string, nodo: string} = this.exp.draw(); 
+            const rama = `
+            ${nombreNodoPrincipal}[label="CASE"];
+            ${expExp.rama}
+            ${inst.rama}
+            ${nombreNodoPrincipal} -> ${expExp.nodo};
+            ${nombreNodoPrincipal} -> ${inst.nodo};
+            `;
+            return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+        }else{
+            const rama = `
+            ${nombreNodoPrincipal}[label="DEFAULT"];
+            ${inst.rama}
+            ${nombreNodoPrincipal} -> ${inst.nodo}
+            `;
+            return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+        }
     }
 }
 

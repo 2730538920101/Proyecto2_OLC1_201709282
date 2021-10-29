@@ -32,6 +32,8 @@
     height: 50px;
     margin: 10px;
     margin-top: 25px;
+    padding-top: 5px;
+    
 }
 .body-app{
     height: 650px;
@@ -58,10 +60,6 @@
     width: 95%;
 }
 
-
-
-
-
 .editor{
     height: 505px;
     width: 100%;
@@ -70,4 +68,20 @@
 .myeditor{
     height: 100%;
     width: 100%;
+}
+
+.a1{
+    text-decoration: none;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.a2{
+    text-decoration: none;
+    color: #000;
+    width: 100%;
+    height: 100%;
+    display: block;
 }

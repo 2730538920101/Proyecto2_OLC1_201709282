@@ -44,5 +44,23 @@ export class Switch extends Instruction{
         }
     }
 
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoSwitch"+x.toString();
+        const expExp: {rama: string, nodo: string} = this.cambio.draw();
+        let rama = `
+        ${nombreNodoPrincipal}[label="SWITCH"];
+        ${expExp.rama}
+        ${nombreNodoPrincipal} -> ${expExp.nodo};
+        `;
+        for(let i = 0; i < this.casos.length; i++){
+            let caso: {rama: string, nodo: string} = this.casos[i].draw();
+            rama = rama + `
+            ${caso.rama}
+            ${nombreNodoPrincipal} -> ${caso.nodo};
+            `;
+        }
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+    }
  
 }

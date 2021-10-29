@@ -93,7 +93,90 @@ export class Arithmetic extends Expression{
                 throw new MiError(this.line, this.column, TypeError.SEMANTICO, "NO ES POSIBLE REALIZAR LA OPERACION UNARIA DE VALORES DE TIPO: " + leftValue.type + " y " + rightValue.type);
             }
         }
-        return result;
-        
+        return result;    
+    }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoArithmetic"+x.toString();
+        const izq:{rama:string, nodo:string} = this.left.draw();
+        const der:{rama:string, nodo:string} = this.right.draw();
+        switch(this.type){
+            case ArithmeticOption.SUMA:
+                const rama1 = `
+                ${nombreNodoPrincipal}[label="ARITHMETIC"];
+                operador${nombreNodoPrincipal}[label = "+"];
+                ${izq.rama}
+                ${der.rama}
+                ${nombreNodoPrincipal} -> ${izq.nodo};
+                ${nombreNodoPrincipal} -> operador${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${der.nodo};
+                `;
+                return {rama: rama1, nodo: nombreNodoPrincipal.toString()};
+            case ArithmeticOption.RESTA:
+                const rama2 = `
+                ${nombreNodoPrincipal}[label="ARITHMETIC"];
+                operador${nombreNodoPrincipal}[label = "-"];
+                ${izq.rama}
+                ${der.rama}
+                ${nombreNodoPrincipal} -> ${izq.nodo};
+                ${nombreNodoPrincipal} -> operador${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${der.nodo};
+                `;
+                return {rama: rama2, nodo: nombreNodoPrincipal.toString()};
+            case ArithmeticOption.MULTIPLICACION:
+                const rama3 = `
+                ${nombreNodoPrincipal}[label="ARITHMETIC"];
+                operador${nombreNodoPrincipal}[label = "*"];
+                ${izq.rama}
+                ${der.rama}
+                ${nombreNodoPrincipal} -> ${izq.nodo};
+                ${nombreNodoPrincipal} -> operador${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${der.nodo};
+                `;
+                return {rama: rama3, nodo: nombreNodoPrincipal.toString()};
+            case ArithmeticOption.DIVISION:
+                const rama4 = `
+                ${nombreNodoPrincipal}[label="ARITHMETIC"];
+                operador${nombreNodoPrincipal}[label = "/"];
+                ${izq.rama}
+                ${der.rama}
+                ${nombreNodoPrincipal} -> ${izq.nodo};
+                ${nombreNodoPrincipal} -> operador${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${der.nodo};
+                `;
+                return {rama: rama4, nodo: nombreNodoPrincipal.toString()};
+            case ArithmeticOption.POTENCIA:
+                const rama5 = `
+                ${nombreNodoPrincipal}[label="ARITHMETIC"];
+                operador${nombreNodoPrincipal}[label = "ˆ"];
+                ${izq.rama}
+                ${der.rama}
+                ${nombreNodoPrincipal} -> ${izq.nodo};
+                ${nombreNodoPrincipal} -> operador${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${der.nodo};
+                `;
+                return {rama: rama5, nodo: nombreNodoPrincipal.toString()};
+            case ArithmeticOption.MODULO:
+                const rama6 = `
+                ${nombreNodoPrincipal}[label="ARITHMETIC"];
+                operador${nombreNodoPrincipal}[label = "%"];
+                ${izq.rama}
+                ${der.rama}
+                ${nombreNodoPrincipal} -> ${izq.nodo};
+                ${nombreNodoPrincipal} -> operador${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${der.nodo};
+                `;
+                return {rama: rama6, nodo: nombreNodoPrincipal.toString()};
+            case ArithmeticOption.UNARIO:
+                const rama7 = `
+                ${nombreNodoPrincipal}[label="ARITHMETIC"];
+                operador${nombreNodoPrincipal}[label = "-"];
+                ${der.rama}
+                ${nombreNodoPrincipal} -> operador${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${der.nodo};
+                `;
+                return {rama: rama7, nodo: nombreNodoPrincipal.toString()};
+        }
     }
 }

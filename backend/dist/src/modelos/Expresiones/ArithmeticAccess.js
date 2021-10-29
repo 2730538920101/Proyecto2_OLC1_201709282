@@ -36,6 +36,12 @@ var ArithmeticAccess = /** @class */ (function (_super) {
             return { value: value.valor, type: value.type };
         }
     };
+    ArithmeticAccess.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoArithmeticAccess" + x.toString();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"ArithmeticAccess\"];\n        nodoid" + nombreNodoPrincipal + "[label=\"ID++\"];\n        nodoidval" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n        " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + " -> nodoidval" + nombreNodoPrincipal + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return ArithmeticAccess;
 }(Expresiones_1.Expression));
 exports.ArithmeticAccess = ArithmeticAccess;

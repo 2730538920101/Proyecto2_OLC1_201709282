@@ -26,6 +26,12 @@ var Continue = /** @class */ (function (_super) {
     Continue.prototype.execute = function (environment) {
         return { line: this.line, column: this.column, type: Retorno_1.Type.CONTINUE };
     };
+    Continue.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoContinue" + x.toString();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"CONTINUE\"];\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Continue;
 }(Instrucciones_1.Instruction));
 exports.Continue = Continue;

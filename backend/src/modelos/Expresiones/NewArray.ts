@@ -28,5 +28,21 @@ export class NewArray extends Expression {
             throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LOS ELEMENTOS DEL ARRAY DEBEN SER DEL MISMO TIPO");
         }
     }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoNewArray"+x.toString();
+        let rama = `
+        ${nombreNodoPrincipal}[label="Array"];
+        `;
+        this.listExpr.forEach((exp)=>{
+            let expExp:{rama:string, nodo:string} = exp.draw();
+            rama = rama + `
+            ${expExp.rama}
+            ${nombreNodoPrincipal} -> ${expExp.nodo};
+            `;
+        });
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+    }
 }
 

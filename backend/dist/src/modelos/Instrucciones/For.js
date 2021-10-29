@@ -58,6 +58,16 @@ var For = /** @class */ (function (_super) {
             throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA CONDICION DEBE RETORNAR UN VALOR DE TIPO BOOLEANO");
         }
     };
+    For.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoFor" + x.toString();
+        var assig = this.asignacion.draw();
+        var cond = this.condicion.draw();
+        var inc = this.incremento.draw();
+        var inst = this.code.draw();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"FOR\"];\n        " + assig.rama + "\n        " + cond.rama + "\n        " + inc.rama + "\n        " + inst.rama + "\n        " + nombreNodoPrincipal + " -> " + assig.nodo + ";\n        " + nombreNodoPrincipal + " -> " + cond.nodo + ";\n        " + nombreNodoPrincipal + " -> " + inc.nodo + ";\n        " + nombreNodoPrincipal + " -> " + inst.nodo + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return For;
 }(Instrucciones_1.Instruction));
 exports.For = For;

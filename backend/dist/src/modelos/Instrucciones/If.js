@@ -46,6 +46,21 @@ var If = /** @class */ (function (_super) {
             }
         }
     };
+    If.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoIf" + x.toString();
+        var cond = this.condition.draw();
+        var inst = this.code.draw();
+        if (this.statement != null) {
+            var elsest = this.statement.draw();
+            var ramaelse = "\n            " + nombreNodoPrincipal + "[label=\"IF / ELSE IF\"];\n            " + cond.rama + "\n            " + inst.rama + "\n            nodoelse" + nombreNodoPrincipal + "[label=\"ELSE\"];\n            " + elsest.rama + "\n            " + nombreNodoPrincipal + " -> " + cond.nodo + ";\n            " + nombreNodoPrincipal + " -> " + inst.nodo + ";\n            " + nombreNodoPrincipal + " -> nodoelse" + nombreNodoPrincipal + " -> " + elsest.nodo + ";\n            ";
+            return { rama: ramaelse, nodo: nombreNodoPrincipal.toString() };
+        }
+        else {
+            var ramaif = "\n            " + nombreNodoPrincipal + "[label=\"IF / ELSE IF\"];\n            " + cond.rama + "\n            " + inst.rama + "\n            " + nombreNodoPrincipal + " -> " + cond.nodo + ";\n            " + nombreNodoPrincipal + " -> " + inst.nodo + ";\n            ";
+            return { rama: ramaif, nodo: nombreNodoPrincipal.toString() };
+        }
+    };
     return If;
 }(Instrucciones_1.Instruction));
 exports.If = If;

@@ -1,0 +1,1 @@
+export let prints:Array<string> = new Array();

@@ -53,6 +53,14 @@ var DoWhile = /** @class */ (function (_super) {
             } while (condition.value == true);
         }
     };
+    DoWhile.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoDoWhile" + x.toString();
+        var condicion = this.condition.draw();
+        var inst = this.code.draw();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"DO WHILE\"];\n        " + condicion.rama + "\n        " + inst.rama + "\n        " + nombreNodoPrincipal + " -> " + condicion.nodo + ";\n        " + nombreNodoPrincipal + " -> " + inst.nodo + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return DoWhile;
 }(Instrucciones_1.Instruction));
 exports.DoWhile = DoWhile;

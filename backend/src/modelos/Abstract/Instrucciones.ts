@@ -10,5 +10,5 @@ export abstract class Instruction {
     }
 
     public abstract execute(environment : Environment) : any;
-
+    public abstract draw() : {rama : string, nodo : string};
 }

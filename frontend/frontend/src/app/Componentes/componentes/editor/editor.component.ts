@@ -6,6 +6,21 @@ import{
   MonacoStandaloneCodeEditor
 } from '@materia-ui/ngx-monaco-editor'
 import { ServicioService } from '../../../Servicios/servicio.service';
+import { Router } from '@angular/router';
+
+
+export interface Simbolos{
+  valor:any,
+  id:string,
+  type:number
+}
+
+export interface Errores{
+  line:number,
+  column:number,
+  type:number,
+  message:string
+}
 
 interface Ventana{
   nombre:string;
@@ -21,14 +36,15 @@ export class EditorComponent implements OnInit {
 
   tabs:Ventana[]=[];
   contador:number=0;
-
-  
+  tablaError:Array<Errores> = new Array();
+  tablaSimbolos:Array<Simbolos> = new Array();
+  ASTstring:string = "";
   ventana:Ventana = {
     nombre: "",
     code: ""
   }
 
-  constructor(private servicio:ServicioService, private monacoLoaderService: MonacoEditorLoaderService) {
+  constructor(private servicio:ServicioService, private monacoLoaderService: MonacoEditorLoaderService, private _router:Router) {
     this.monacoLoaderService.isMonacoLoaded$
       .pipe(
         filter(isLoaded => isLoaded),
@@ -151,10 +167,32 @@ export class EditorComponent implements OnInit {
 
   Compilar(index:any){
     this.servicio.post('http://localhost:3000/backend/analizar' ,this.tabs[index]).subscribe(result => {
-      this.console = this.console + result.resultado + '\n';
-      console.log(result.resultado)
+      for(let i = 0; i < result.prints.length; i++){
+        this.console = this.console + result.prints[i] + '\n';
+      }
+      for(let j=0; j<result.errores.length; j++){
+        this.console = this.console + result.errores[j].message + '\n';
+      }
+      this.tablaError = result.errores;
+      this.ASTstring = result.ast;
+      this.tablaSimbolos = result.tablasimbolos;
+      console.log(result.resultado);
     });
   }
  
+  GenerarErrores(){
+    this.servicio.setErrores(this.tablaError);
+    this._router.navigate(['errors']);
+  }
+
+  GenerarTabla(){
+    this.servicio.setSimbolos(this.tablaSimbolos);
+    this._router.navigate(['symbols']);
+  }
+
+  GenerarAST(){
+    this.servicio.setAstString(this.ASTstring);
+    this._router.navigate(['ast']);
+  }
 
 }

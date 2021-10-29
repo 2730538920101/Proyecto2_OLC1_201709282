@@ -29,5 +29,46 @@ export class Logic extends Expression{
             return {value:null, type : Type.NULL};
         }
     }
+
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoLogic"+x.toString();
+        const izq:{rama:string, nodo:string} = this.left.draw();
+        const der:{rama:string, nodo:string} = this.right.draw();
+        switch(this.type){
+            case LogicOption.AND:
+                const rama1 = `
+                ${nombreNodoPrincipal}[label="LOGIC"];
+                operador${nombreNodoPrincipal}[label = "&&"];
+                ${izq.rama}
+                ${der.rama}
+                ${nombreNodoPrincipal} -> ${izq.nodo};
+                ${nombreNodoPrincipal} -> operador${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${der.nodo};
+                `;
+                return {rama: rama1, nodo: nombreNodoPrincipal.toString()};
+            case LogicOption.OR:
+                const rama2 = `
+                ${nombreNodoPrincipal}[label="LOGIC"];
+                operador${nombreNodoPrincipal}[label = "||"];
+                ${izq.rama}
+                ${der.rama}
+                ${nombreNodoPrincipal} -> ${izq.nodo};
+                ${nombreNodoPrincipal} -> operador${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${der.nodo};
+                `;
+                return {rama: rama2, nodo: nombreNodoPrincipal.toString()};
+            case LogicOption.NOT:
+                const rama3 = `
+                ${nombreNodoPrincipal}[label="LOGIC"];
+                operador${nombreNodoPrincipal}[label = "!"];
+                ${izq.rama}
+                ${nombreNodoPrincipal} -> operador${nombreNodoPrincipal};
+                ${nombreNodoPrincipal} -> ${izq.nodo};
+                `;
+                return {rama: rama3, nodo: nombreNodoPrincipal.toString()};
+        }
+        
+    }
 }
 

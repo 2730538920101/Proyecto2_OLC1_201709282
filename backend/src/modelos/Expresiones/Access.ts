@@ -17,4 +17,15 @@ export class Access extends Expression{
             return {value : value.valor, type : value.type};
         }
     }
+    
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoAccess"+x.toString();
+        const rama = `
+        ${nombreNodoPrincipal}[label="Access"];
+        nodoaccess${nombreNodoPrincipal}[label="${this.id}"];
+        ${nombreNodoPrincipal} -> nodoaccess${nombreNodoPrincipal};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
+    }
 }

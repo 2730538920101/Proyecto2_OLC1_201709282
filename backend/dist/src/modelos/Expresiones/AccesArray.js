@@ -58,6 +58,13 @@ var AccesArray = /** @class */ (function (_super) {
             throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE HA DECLARADO EL ARREGLO");
         }
     };
+    AccesArray.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoAccessArray" + x.toString();
+        var indice = this.index.draw();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"AccessArray\"];\n        nodoid" + nombreNodoPrincipal + "[label=\"ID\"];\n        nodoidval" + nombreNodoPrincipal + "[label=\"" + this.anterior + "\"];\n        " + indice.rama + "\n        " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + " -> nodoidval" + nombreNodoPrincipal + ";\n        " + nombreNodoPrincipal + " -> " + indice.nodo + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return AccesArray;
 }(Expresiones_1.Expression));
 exports.AccesArray = AccesArray;

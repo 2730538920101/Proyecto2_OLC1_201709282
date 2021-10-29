@@ -40,6 +40,16 @@ var Statement = /** @class */ (function (_super) {
             }
         }
     };
+    Statement.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoStatement" + x.toString();
+        var rama = "";
+        for (var i = 0; i < this.code.length; i++) {
+            var inst = this.code[i].draw();
+            rama = rama + ("\n            " + nombreNodoPrincipal + "[label = \"STATEMENT\"];\n            " + inst.rama + "\n            " + nombreNodoPrincipal + " -> " + inst.nodo + ";\n            ");
+        }
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Statement;
 }(Instrucciones_1.Instruction));
 exports.Statement = Statement;

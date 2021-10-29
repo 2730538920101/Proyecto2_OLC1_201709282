@@ -29,6 +29,12 @@ var Params = /** @class */ (function (_super) {
         environment.guardar(this.id, "", this.type);
         return { value: this.id, type: this.type };
     };
+    Params.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoParametro" + x.toString();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"Parametro\"];\n        nodoid" + nombreNodoPrincipal + "[label=\"ID\"];\n        nodoidval" + nombreNodoPrincipal + "[label=\"" + this.id + "\"];\n        tipodato" + nombreNodoPrincipal + "[label=\"TIPO DE DATO\"];\n        tipodatoval" + nombreNodoPrincipal + "[label=\"" + this.type.toString() + "\"];\n        " + nombreNodoPrincipal + " -> nodoid" + nombreNodoPrincipal + " -> nodoidval" + nombreNodoPrincipal + ";\n        " + nombreNodoPrincipal + " -> tipodato" + nombreNodoPrincipal + " -> tipodatoval" + nombreNodoPrincipal + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Params;
 }(Expresiones_1.Expression));
 exports.Params = Params;

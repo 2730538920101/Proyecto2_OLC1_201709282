@@ -54,6 +54,14 @@ var While = /** @class */ (function (_super) {
             }
         }
     };
+    While.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoWhile" + x.toString();
+        var condicion = this.condition.draw();
+        var inst = this.code.draw();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"WHILE\"];\n        " + condicion.rama + "\n        " + inst.rama + "\n        " + nombreNodoPrincipal + " -> " + condicion.nodo + ";\n        " + nombreNodoPrincipal + " -> " + inst.nodo + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return While;
 }(Instrucciones_1.Instruction));
 exports.While = While;

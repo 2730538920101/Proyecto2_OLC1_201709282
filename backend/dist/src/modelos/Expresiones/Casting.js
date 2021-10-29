@@ -66,6 +66,13 @@ var Casting = /** @class */ (function (_super) {
                 throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "NO SE PUEDE REALIZAR EL CASTING DEL TIPO " + this.changeTo);
         }
     };
+    Casting.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoCasting" + x.toString();
+        var valor = this.value.draw();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"CASTING\"];\n        tipodato" + nombreNodoPrincipal + "[label=\"TIPO DE DATO\"];\n        tipodatoval" + nombreNodoPrincipal + "[label=\"" + this.changeTo.toString() + "\"];\n        " + valor.rama + "\n        " + nombreNodoPrincipal + " -> tipodato" + nombreNodoPrincipal + " -> tipodatoval" + nombreNodoPrincipal + ";\n        " + nombreNodoPrincipal + " -> " + valor.nodo + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return Casting;
 }(Expresiones_1.Expression));
 exports.Casting = Casting;

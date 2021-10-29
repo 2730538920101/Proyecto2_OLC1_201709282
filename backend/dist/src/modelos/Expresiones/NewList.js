@@ -30,6 +30,12 @@ var NewList = /** @class */ (function (_super) {
         var array = new List_1.List(this.type);
         return { value: array, type: Retorno_1.Type.LIST };
     };
+    NewList.prototype.draw = function () {
+        var x = Math.floor(Math.random() * (100 - 0) + 0);
+        var nombreNodoPrincipal = "nodoNewList" + x.toString();
+        var rama = "\n        " + nombreNodoPrincipal + "[label=\"DynamicList\"];\n        tipodato" + nombreNodoPrincipal + "[label=\"TIPO DE DATO\"];\n        tipodatoval" + nombreNodoPrincipal + "[label=\"" + this.type.toString() + "\"];\n        " + nombreNodoPrincipal + " -> tipodato" + nombreNodoPrincipal + " -> tipodatoval" + nombreNodoPrincipal + ";\n        ";
+        return { rama: rama, nodo: nombreNodoPrincipal.toString() };
+    };
     return NewList;
 }(Expresiones_1.Expression));
 exports.NewList = NewList;

@@ -1,7 +1,6 @@
 import { Expression } from "../Abstract/Expresiones";
 import { Environment } from "../Symbol/Enviorment";
 import { Retorno, Type } from "../Abstract/Retorno";
-import { Symbol } from '../Symbol/Symbol';
 import { MiError, TypeError } from "../Errores/Error";
 
 export class AccesArray extends Expression {
@@ -34,7 +33,21 @@ export class AccesArray extends Expression {
             }
         }else{
             throw new MiError(this.line, this.column,TypeError.SEMANTICO, "NO SE HA DECLARADO EL ARREGLO");
-        }
-        
+        }        
+    }
+    
+    public draw() : {rama : string, nodo: string}{
+        const x = Math.floor(Math.random() * (100-0)+0);
+        let nombreNodoPrincipal = "nodoAccessArray"+x.toString();
+        const indice: {rama: string, nodo:string} = this.index.draw();
+        const rama = `
+        ${nombreNodoPrincipal}[label="AccessArray"];
+        nodoid${nombreNodoPrincipal}[label="ID"];
+        nodoidval${nombreNodoPrincipal}[label="${this.anterior}"];
+        ${indice.rama}
+        ${nombreNodoPrincipal} -> nodoid${nombreNodoPrincipal} -> nodoidval${nombreNodoPrincipal};
+        ${nombreNodoPrincipal} -> ${indice.nodo};
+        `;
+        return {rama: rama, nodo: nombreNodoPrincipal.toString()};
     }
 }
