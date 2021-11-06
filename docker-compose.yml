@@ -1,0 +1,18 @@
+web:
+  build: ./backend
+  ports:
+    - "3000:3000"
+  links:
+    - backend
+backend:
+  image: compi1
+
+angular:
+  build: ./frontend/frontend
+  ports:
+    - "4200:80"
+  links:
+    - frontend
+frontend:
+  image: compi1_front
+
