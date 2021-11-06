@@ -15,6 +15,9 @@ var List = /** @class */ (function () {
     List.prototype.append = function (value) {
         this.values.push(value);
     };
+    List.prototype.setValues = function (val) {
+        this.values = val;
+    };
     return List;
 }());
 exports.List = List;

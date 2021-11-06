@@ -25,6 +25,7 @@
     const { Statement } = require('../modelos/Instrucciones/Statement');
     const { Assigment } = require('../modelos/Instrucciones/Assigment');
     const { AccessArrayAssigment } = require('../modelos/Instrucciones/AccessArrayAssigment');
+    const { AccessListAssigment } = require('../modelos/Instrucciones/AccessListAssigment');
     const { Break } = require('../modelos/Instrucciones/Break');
     const { Continue } = require('../modelos/Instrucciones/Continue');
     const { Return } = require('../modelos/Instrucciones/Return');
@@ -182,7 +183,7 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 %left           '+','-'
 %left           '/','*'
 %nonassoc       'ˆ'
-%right          '-'
+%right          UMENOS
 %nonassoc       '(' , ')'
 
 
@@ -319,9 +320,27 @@ PARAMETROS_FUNCION
             $$ = $1;
         }else if($3 == "string"){
             const parametro = new Params($4, 4, @1.first_line, @1.first_column);
-            $$ = [parametro];
+            $1.push(parametro);
+            $$ = $1;
         }
-
+    }
+    |PARAMETROS_FUNCION ',' 'lista_dinamica' '<' TIPO_DATO '>' 'id'{
+        const parametro1 = new Params($7, 7, @1.first_line, @1.first_column);
+        $1.push(parametro1);
+        $$ = $1;
+    }
+    |'lista_dinamica' '<' TIPO_DATO '>' 'id'{
+        const parametro2 = new Params($5, 7, @1.first_line, @1.first_column);
+        $$ = [parametro2];
+    }
+    |PARAMETROS_FUNCION ',' TIPO_DATO 'id' '[' ']'{
+        const parametro3 = new Params($4, 6, @1.first_line, @1.first_column);
+        $1.push(parametro3);
+        $$ = $1;
+    }
+    |TIPO_DATO 'id' '[' ']'{
+        const parametro4 = new Params($2, 6, @1.first_line, @1.first_column);
+        $$ = [parametro4];
     }
     |TIPO_DATO 'id'{
         if($1 == "int"){
@@ -599,8 +618,21 @@ DECLARACION_VARIABLE
             $$ = new Declaration( 4, $2, @1.first_line, @1.first_column);
         }    
     }
+    |TIPO_DATO LISTA_ID '[' ']' ';'{
+        if($1 == "int"){
+            $$ = new Declaration( 0, $2, @1.first_line, @1.first_column);
+        }else if($1 == "double"){
+            $$ = new Declaration( 1, $2, @1.first_line, @1.first_column);
+        }else if($1 == "boolean"){
+            $$ = new Declaration( 2, $2, @1.first_line, @1.first_column);
+        }else if($1 == "char"){
+            $$ = new Declaration( 3, $2, @1.first_line, @1.first_column);
+        }else if($1 == "string"){
+            $$ = new Declaration( 4, $2, @1.first_line, @1.first_column);
+        }      
+    }
     |'lista_dinamica' '<' TIPO_DATO '>' ASIGNACION ';'{
-         if($3 == "int"){
+        if($3 == "int"){
             $$ = new Declaration( 0, $5, @1.first_line, @1.first_column);
         }else if($3 == "double"){
             $$ = new Declaration( 1, $5, @1.first_line, @1.first_column);
@@ -610,10 +642,10 @@ DECLARACION_VARIABLE
             $$ = new Declaration( 3, $5, @1.first_line, @1.first_column);
         }else if($3 == "string"){
             $$ = new Declaration( 4, $5, @1.first_line, @1.first_column);
-        }    
+        }      
     }
      |'lista_dinamica' '<' TIPO_DATO '>' LISTA_ID ';'{
-         if($3 == "int"){
+          if($3 == "int"){
             $$ = new Declaration( 0, $5, @1.first_line, @1.first_column);
         }else if($3 == "double"){
             $$ = new Declaration( 1, $5, @1.first_line, @1.first_column);
@@ -623,7 +655,7 @@ DECLARACION_VARIABLE
             $$ = new Declaration( 3, $5, @1.first_line, @1.first_column);
         }else if($3 == "string"){
             $$ = new Declaration( 4, $5, @1.first_line, @1.first_column);
-        }    
+        }      
     }
     ;
 
@@ -642,6 +674,10 @@ ASIGNACION
     }
     |LISTA_ID '[' EXPRESION ']' '=' EXPRESION{
         $$ = new AccessArrayAssigment($1, $3, $6, @1.first_line, @1.first_column);
+        //console.log($6);
+    }
+    |LISTA_ID '[' '[' EXPRESION ']' ']' '=' EXPRESION{
+        $$ = new AccessListAssigment($1, $4, $8, @1.first_line, @1.first_column);
         //console.log($6);
     }
     |'id' '++'{
@@ -789,7 +825,7 @@ EXPMAT
     |EXPRESION '%' EXPRESION{
         $$ = new Arithmetic($1, $3, ArithmeticOption.MODULO, @1.first_line, @1.first_column);
     }
-    |'-' EXPRESION{
+    |'-' EXPRESION %prec UMENOS{
         $$ = new Arithmetic(new Literal(0, @1.first_line, @1.first_column, 0), $2, ArithmeticOption.UNARIO, @1.first_line, @1.first_column);
     }
     ;

@@ -6,7 +6,9 @@ const { Function } = require('../../dist/src/modelos/Instrucciones/Function');
 const { Environment } = require('../../dist/src/modelos/Symbol/Enviorment');
 const { prints } = require('../../dist/src/modelos/Reportes/Impresiones');
 const { TablaSim } = require('../../dist/src/modelos/Reportes/TablaSimbolos');
+const { contadorstart } = require('../../dist/src/modelos/Instrucciones/Call');
 const router = express.Router();
+
 router.get('/', (req,res)=>{
     res.send(req.body.response);
 });
@@ -23,12 +25,14 @@ router.post('/', (req, res)=>{
         TablaSim.splice(0,TablaSim.length);
         prints.splice(0,prints.length);
         errores.splice(0,errores.length);
+        contadorstart.splice(0,contadorstart.length);
         const analisis = gram.parse(code);
         const env = new Environment(null);
         for(const instr of analisis){
             try {
-                if(instr instanceof Function)
+                if(instr instanceof Function){
                     instr.execute(env);
+                }
             } catch (MiError) {
                 errores.push(MiError);  
             }
@@ -39,8 +43,11 @@ router.post('/', (req, res)=>{
                 continue;
             try {
                 const actual = instr.execute(env);
+                if(contadorstart.length > 1){
+                    errores.push(new MiError(0, 0, TypeError.SEMANTICO, "FUNCION START WITH NO PUEDE EJECUTARSE MAS DE UNA VEZ"));
+                }
                 if(actual != null || actual != undefined){
-                    errores.push(new MiError(actual.line, actual.column, TypeError.SEMANTICO, actual.type + "VARIABLE O FUNCION FUERA DEL AMBITO CORRECTO"));
+                    errores.push(new MiError(actual.line, actual.column, TypeError.SEMANTICO,  "VARIABLE O FUNCION FUERA DEL AMBITO CORRECTO"));
                 }
             } catch (error) {
                 errores.push(error);  
@@ -72,7 +79,8 @@ router.post('/', (req, res)=>{
         console.log(error);
     }
     console.log(errores)
-
+    
+    
 });
 
 module.exports = router;

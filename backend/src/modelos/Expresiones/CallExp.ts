@@ -3,6 +3,8 @@ import { Environment } from "../Symbol/Enviorment";
 import { Expression } from "../Abstract/Expresiones";
 import { MiError, TypeError } from '../Errores/Error';
 import { Type } from '../Abstract/Retorno';
+import { Symbol } from '../Symbol/Symbol';
+import { List } from '../Symbol/List';
 
 export enum TypeCallExp{
     GETVALUE,
@@ -54,14 +56,22 @@ export class CallExp extends Instruction{
             case TypeCallExp.LENGTH:
                 let lengthval = this.expresiones[0].execute(environment);
                 if(this.expresiones.length == 1){
-                    if(lengthval.type == Type.ARRAY || lengthval.type == Type.LIST || lengthval.type == Type.STRING){
+                    if(lengthval.type == Type.STRING){
                         return {value:lengthval.value.toString().length, type:Type.INT};
                     }else if(lengthval.type == Type.RETURN){
-                        if(lengthval.value.type == Type.ARRAY || lengthval.value.type == Type.LIST || lengthval.value.type == Type.STRING){
+                        if(lengthval.value.type == Type.STRING){
                             return {value:lengthval.value.value.toString().length, type:Type.INT};
+                        }else if(lengthval.value.type == Type.LIST){
+                            return {value:lengthval.value.value.values.length, type:Type.INT};
+                        }else if(lengthval.value.type == Type.ARRAY){
+                            return {value:lengthval.value.value.values.length, type:Type.INT};
                         }else{
                             throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION LENGTH SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING, DYNAMIC LIST O ARRAY");    
                         }
+                    }else if(lengthval.type == Type.LIST){
+                            return {value:lengthval.value.values.length, type:Type.INT};
+                    }else if(lengthval.type == Type.ARRAY){
+                        return {value:lengthval.value.values.length, type:Type.INT};
                     }else{
                         throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION LENGTH SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING, DYNAMIC LIST O ARRAY");    
                     }
@@ -89,10 +99,26 @@ export class CallExp extends Instruction{
                 const tochararrayval = this.expresiones[0].execute(environment);
                 if(this.expresiones.length == 1){
                     if(tochararrayval.type == Type.STRING){
-                        return {value:tochararrayval.value.split(''),type:Type.CHAR};
+                        let arr = tochararrayval.value.split('');
+                        let val = [];
+                        for(let i =0; i<arr.length; i++){
+                            let sim = new Symbol(arr[i], '', Type.CHAR);
+                            val.push(sim);
+                        }
+                        let li = new List(Type.CHAR);
+                        li.setValues(val);
+                        return {value:li,type:Type.LIST};
                     }else if(tochararrayval.type == Type.RETURN){
                         if(tochararrayval.value.type == Type.STRING){
-                            return {value:tochararrayval.value.value.split(''),type:Type.CHAR};
+                            let arr = tochararrayval.value.split('');
+                            let val = [];
+                            for(let i =0; i<arr.length; i++){
+                                let sim = new Symbol(arr[i], '', Type.CHAR);
+                                val.push(sim);
+                            }
+                            let li = new List(Type.CHAR);
+                            li.setValues(val);
+                            return {value:li,type:Type.LIST};
                         }else{
                             throw new MiError(this.line, this.column, TypeError.SEMANTICO, "LA FUNCION TOCHARARRAY SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING");
                         }

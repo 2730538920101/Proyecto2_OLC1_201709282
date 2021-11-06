@@ -20,6 +20,8 @@ var Instrucciones_1 = require("../Abstract/Instrucciones");
 var Enviorment_1 = require("../Symbol/Enviorment");
 var Error_1 = require("../Errores/Error");
 var Retorno_1 = require("../Abstract/Retorno");
+var Symbol_1 = require("../Symbol/Symbol");
+var List_1 = require("../Symbol/List");
 var TypeCallExp;
 (function (TypeCallExp) {
     TypeCallExp[TypeCallExp["GETVALUE"] = 0] = "GETVALUE";
@@ -77,16 +79,28 @@ var CallExp = /** @class */ (function (_super) {
             case TypeCallExp.LENGTH:
                 var lengthval = this.expresiones[0].execute(environment);
                 if (this.expresiones.length == 1) {
-                    if (lengthval.type == Retorno_1.Type.ARRAY || lengthval.type == Retorno_1.Type.LIST || lengthval.type == Retorno_1.Type.STRING) {
+                    if (lengthval.type == Retorno_1.Type.STRING) {
                         return { value: lengthval.value.toString().length, type: Retorno_1.Type.INT };
                     }
                     else if (lengthval.type == Retorno_1.Type.RETURN) {
-                        if (lengthval.value.type == Retorno_1.Type.ARRAY || lengthval.value.type == Retorno_1.Type.LIST || lengthval.value.type == Retorno_1.Type.STRING) {
+                        if (lengthval.value.type == Retorno_1.Type.STRING) {
                             return { value: lengthval.value.value.toString().length, type: Retorno_1.Type.INT };
+                        }
+                        else if (lengthval.value.type == Retorno_1.Type.LIST) {
+                            return { value: lengthval.value.value.values.length, type: Retorno_1.Type.INT };
+                        }
+                        else if (lengthval.value.type == Retorno_1.Type.ARRAY) {
+                            return { value: lengthval.value.value.values.length, type: Retorno_1.Type.INT };
                         }
                         else {
                             throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION LENGTH SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING, DYNAMIC LIST O ARRAY");
                         }
+                    }
+                    else if (lengthval.type == Retorno_1.Type.LIST) {
+                        return { value: lengthval.value.values.length, type: Retorno_1.Type.INT };
+                    }
+                    else if (lengthval.type == Retorno_1.Type.ARRAY) {
+                        return { value: lengthval.value.values.length, type: Retorno_1.Type.INT };
                     }
                     else {
                         throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION LENGTH SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING, DYNAMIC LIST O ARRAY");
@@ -120,11 +134,27 @@ var CallExp = /** @class */ (function (_super) {
                 var tochararrayval = this.expresiones[0].execute(environment);
                 if (this.expresiones.length == 1) {
                     if (tochararrayval.type == Retorno_1.Type.STRING) {
-                        return { value: tochararrayval.value.split(''), type: Retorno_1.Type.CHAR };
+                        var arr = tochararrayval.value.split('');
+                        var val = [];
+                        for (var i = 0; i < arr.length; i++) {
+                            var sim = new Symbol_1.Symbol(arr[i], '', Retorno_1.Type.CHAR);
+                            val.push(sim);
+                        }
+                        var li = new List_1.List(Retorno_1.Type.CHAR);
+                        li.setValues(val);
+                        return { value: li, type: Retorno_1.Type.LIST };
                     }
                     else if (tochararrayval.type == Retorno_1.Type.RETURN) {
                         if (tochararrayval.value.type == Retorno_1.Type.STRING) {
-                            return { value: tochararrayval.value.value.split(''), type: Retorno_1.Type.CHAR };
+                            var arr = tochararrayval.value.split('');
+                            var val = [];
+                            for (var i = 0; i < arr.length; i++) {
+                                var sim = new Symbol_1.Symbol(arr[i], '', Retorno_1.Type.CHAR);
+                                val.push(sim);
+                            }
+                            var li = new List_1.List(Retorno_1.Type.CHAR);
+                            li.setValues(val);
+                            return { value: li, type: Retorno_1.Type.LIST };
                         }
                         else {
                             throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION TOCHARARRAY SOLO PUEDE RECIBIR PARAMETROS DE TIPO STRING");

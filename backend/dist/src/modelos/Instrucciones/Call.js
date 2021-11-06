@@ -15,12 +15,13 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Call = exports.TypeCall = void 0;
+exports.Call = exports.TypeCall = exports.contadorstart = void 0;
 var Instrucciones_1 = require("../Abstract/Instrucciones");
 var Enviorment_1 = require("../Symbol/Enviorment");
 var Error_1 = require("../Errores/Error");
 var Symbol_1 = require("../Symbol/Symbol");
 var Impresiones_1 = require("../Reportes/Impresiones");
+exports.contadorstart = new Array();
 var TypeCall;
 (function (TypeCall) {
     TypeCall[TypeCall["DECLARED"] = 0] = "DECLARED";
@@ -36,41 +37,35 @@ var Call = /** @class */ (function (_super) {
         _this.id = id;
         _this.expresiones = expresiones;
         _this.type = type;
-        _this.contadorstart = 0;
         return _this;
     }
     Call.prototype.execute = function (environment) {
         switch (this.type) {
             case TypeCall.START:
-                this.contadorstart++;
-                if (this.contadorstart <= 1) {
-                    var start = environment.getFuncion(this.id);
-                    if (start != undefined || start != null) {
-                        var newEnv = new Enviorment_1.Environment(environment.getGlobal());
-                        if (start.parametros.length == this.expresiones.length) {
-                            for (var i = 0; i < this.expresiones.length; i++) {
-                                var value = this.expresiones[i].execute(environment);
-                                var param = start.parametros[i].execute(environment);
-                                if (value.type == param.type) {
-                                    newEnv.guardar(param.value, value.value, value.type);
-                                }
-                                else {
-                                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LOS PARAMETROS INGRESADOS EN LA LLAMADA NO SON DEL MISMO TIPO QUE EN LA DECLARACION");
-                                }
+                exports.contadorstart.push(this);
+                var start = environment.getFuncion(this.id);
+                if (start != undefined || start != null) {
+                    var newEnv = new Enviorment_1.Environment(environment.getGlobal());
+                    if (start.parametros.length == this.expresiones.length) {
+                        for (var i = 0; i < this.expresiones.length; i++) {
+                            var value = this.expresiones[i].execute(environment);
+                            var param = start.parametros[i].execute(environment);
+                            if (value.type == param.type) {
+                                newEnv.guardar(param.value, value.value, value.type);
                             }
-                            start.statment.execute(newEnv);
-                            break;
+                            else {
+                                throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LOS PARAMETROS INGRESADOS EN LA LLAMADA NO SON DEL MISMO TIPO QUE EN LA DECLARACION");
+                            }
                         }
-                        else {
-                            throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION NO TIENE EL MISMO NUMERO DE PARAMETROS QUE LOS DATOS INGRESADOS");
-                        }
+                        start.statment.execute(newEnv);
+                        break;
                     }
                     else {
-                        throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION QUE ESTA LLAMANDO NO HA SIDO DECLARADA");
+                        throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION NO TIENE EL MISMO NUMERO DE PARAMETROS QUE LOS DATOS INGRESADOS");
                     }
                 }
                 else {
-                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION START SOLO SE PUEDE EJECUTAR UNA VEZ");
+                    throw new Error_1.MiError(this.line, this.column, Error_1.TypeError.SEMANTICO, "LA FUNCION QUE ESTA LLAMANDO NO HA SIDO DECLARADA");
                 }
             case TypeCall.DECLARED:
                 var func = environment.getFuncion(this.id);

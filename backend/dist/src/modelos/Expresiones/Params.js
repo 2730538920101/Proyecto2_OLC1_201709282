@@ -16,6 +16,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Params = void 0;
+var Retorno_1 = require("../Abstract/Retorno");
 var Expresiones_1 = require("../Abstract/Expresiones");
 var Params = /** @class */ (function (_super) {
     __extends(Params, _super);
@@ -26,8 +27,18 @@ var Params = /** @class */ (function (_super) {
         return _this;
     }
     Params.prototype.execute = function (environment) {
-        environment.guardar(this.id, "", this.type);
-        return { value: this.id, type: this.type };
+        if (this.type == Retorno_1.Type.LIST) {
+            environment.guardar(this.id, '', Retorno_1.Type.LIST);
+            return { value: this.id, type: Retorno_1.Type.LIST };
+        }
+        else if (this.type == Retorno_1.Type.ARRAY) {
+            environment.guardar(this.id, '', Retorno_1.Type.ARRAY);
+            return { value: this.id, type: Retorno_1.Type.ARRAY };
+        }
+        else {
+            environment.guardar(this.id, '', this.type);
+            return { value: this.id, type: this.type };
+        }
     };
     Params.prototype.draw = function () {
         var x = Math.floor(Math.random() * (100 - 0) + 0);

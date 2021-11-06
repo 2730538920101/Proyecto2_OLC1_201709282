@@ -20,4 +20,8 @@ export class List{
         this.values.push(value);
     }
 
+    public setValues(val:Symbol[]){
+        this.values = val;
+    }
+
 }
