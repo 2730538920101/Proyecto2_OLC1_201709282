@@ -9,14 +9,10 @@ export class Params extends Expression{
     }
     public execute(environment: Environment):Retorno{
         if(this.type == Type.LIST){
-            environment.guardar(this.id,'', Type.LIST);
             return { value: this.id, type: Type.LIST };
         }else if( this.type == Type.ARRAY){
-            
-            environment.guardar(this.id,'', Type.ARRAY);
             return { value: this.id, type: Type.ARRAY };
         }else{
-            environment.guardar(this.id,'', this.type);
             return {value:this.id, type:this.type};
         }
     }

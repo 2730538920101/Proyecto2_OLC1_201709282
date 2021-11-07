@@ -28,15 +28,12 @@ var Params = /** @class */ (function (_super) {
     }
     Params.prototype.execute = function (environment) {
         if (this.type == Retorno_1.Type.LIST) {
-            environment.guardar(this.id, '', Retorno_1.Type.LIST);
             return { value: this.id, type: Retorno_1.Type.LIST };
         }
         else if (this.type == Retorno_1.Type.ARRAY) {
-            environment.guardar(this.id, '', Retorno_1.Type.ARRAY);
             return { value: this.id, type: Retorno_1.Type.ARRAY };
         }
         else {
-            environment.guardar(this.id, '', this.type);
             return { value: this.id, type: this.type };
         }
     };

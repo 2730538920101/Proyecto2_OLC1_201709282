@@ -25,7 +25,27 @@ export class Arithmetic extends Expression{
         
         if(this.type == ArithmeticOption.SUMA){
             const dominanteSuma = this.DominanteSuma(leftValue.type, rightValue.type);
+            if(leftValue.type == Type.BOOLEAN){
+                if(leftValue.value == "true"){
+                    leftValue.value = 1;
+                }else{
+                    leftValue.value = 0;
+                }
+            }
+            if(rightValue.type == Type.BOOLEAN){
+                if(rightValue.value == "true"){
+                    rightValue.value = 1;
+                }else{
+                    rightValue.value = 0;
+                }
+            }
             if(dominanteSuma == Type.STRING){
+                if(leftValue.type == Type.CHAR){
+                    leftValue.value = String.fromCharCode(leftValue.value);
+                }
+                if(rightValue.type == Type.CHAR){
+                    rightValue.value = String.fromCharCode(rightValue.value);
+                }
                 result = {value:(leftValue.value.toString() + rightValue.value.toString()), type: Type.STRING};
             }else if(dominanteSuma == Type.INT){
                 result = {value:(leftValue.value + rightValue.value), type: Type.INT};

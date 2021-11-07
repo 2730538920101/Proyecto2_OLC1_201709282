@@ -44,7 +44,29 @@ var Arithmetic = /** @class */ (function (_super) {
         var result = { value: null, type: Retorno_1.Type.NULL };
         if (this.type == ArithmeticOption.SUMA) {
             var dominanteSuma = this.DominanteSuma(leftValue.type, rightValue.type);
+            if (leftValue.type == Retorno_1.Type.BOOLEAN) {
+                if (leftValue.value == "true") {
+                    leftValue.value = 1;
+                }
+                else {
+                    leftValue.value = 0;
+                }
+            }
+            if (rightValue.type == Retorno_1.Type.BOOLEAN) {
+                if (rightValue.value == "true") {
+                    rightValue.value = 1;
+                }
+                else {
+                    rightValue.value = 0;
+                }
+            }
             if (dominanteSuma == Retorno_1.Type.STRING) {
+                if (leftValue.type == Retorno_1.Type.CHAR) {
+                    leftValue.value = String.fromCharCode(leftValue.value);
+                }
+                if (rightValue.type == Retorno_1.Type.CHAR) {
+                    rightValue.value = String.fromCharCode(rightValue.value);
+                }
                 result = { value: (leftValue.value.toString() + rightValue.value.toString()), type: Retorno_1.Type.STRING };
             }
             else if (dominanteSuma == Retorno_1.Type.INT) {

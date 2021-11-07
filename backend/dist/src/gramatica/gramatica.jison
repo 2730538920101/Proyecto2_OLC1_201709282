@@ -173,18 +173,16 @@ id                  ({letra}|('_'{letra})|({letra}'_'))({letra}|{int}|'_')*
 
 //DEFINIR PRECEDENCIA DE LOS OPERADORES
 %right          '++','--'
-%left           '?'
-%left           ':'
+%left           '?',':'
 %left           '||'
 %left           '&&'
-%right          '!'
-%left           '==','!=','<','<=','>','>='
-%left           '%'
+%right          '!' 
+%left           '!=', '==''<=','>=','<','>'
 %left           '+','-'
-%left           '/','*'
+%left           '*', '/', '%'
 %nonassoc       'ˆ'
-%right          UMENOS
 %nonassoc       '(' , ')'
+%right          UMENOS
 
 
 
@@ -333,13 +331,13 @@ PARAMETROS_FUNCION
         const parametro2 = new Params($5, 7, @1.first_line, @1.first_column);
         $$ = [parametro2];
     }
-    |PARAMETROS_FUNCION ',' TIPO_DATO 'id' '[' ']'{
-        const parametro3 = new Params($4, 6, @1.first_line, @1.first_column);
+    |PARAMETROS_FUNCION ',' TIPO_DATO '[' ']' 'id'{
+        const parametro3 = new Params($6, 6, @1.first_line, @1.first_column);
         $1.push(parametro3);
         $$ = $1;
     }
-    |TIPO_DATO 'id' '[' ']'{
-        const parametro4 = new Params($2, 6, @1.first_line, @1.first_column);
+    |TIPO_DATO '[' ']' 'id'{
+        const parametro4 = new Params($4, 6, @1.first_line, @1.first_column);
         $$ = [parametro4];
     }
     |TIPO_DATO 'id'{
@@ -839,7 +837,7 @@ EXPLOG
         $$ = new Logic($1, $3, LogicOption.OR, @1.first_line, @1.first_column);
     }
     |'!' EXPRESION{
-        $$ = new Logic($2, null, LogicOption.NOT, @1.first_line, @1.first_column);
+        $$ = new Logic($2, new Literal(false, @1.first_line, @1.first_column, 2), LogicOption.NOT, @1.first_line, @1.first_column);
     }
     ;
 

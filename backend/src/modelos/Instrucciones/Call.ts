@@ -30,8 +30,8 @@ export class Call extends Instruction{
                     let newEnv = new Environment(environment.getGlobal());
                     if(start.parametros.length == this.expresiones.length){
                         for(let i = 0; i < this.expresiones.length; i++){
-                            let value = this.expresiones[i].execute(environment);
-                            let param = start.parametros[i].execute(environment);
+                            let value = this.expresiones[i].execute(newEnv);
+                            let param = start.parametros[i].execute(newEnv);
                             if(value.type == param.type){
                                 newEnv.guardar(param.value, value.value, value.type);
                             }else{

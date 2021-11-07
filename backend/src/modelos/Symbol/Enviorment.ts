@@ -1,7 +1,6 @@
 import { Symbol } from './Symbol';
 import { Type } from "../Abstract/Retorno";
 import { Function } from "../Instrucciones/Function";
-import { MiError, TypeError } from "../Errores/Error";
 import { TablaSim } from "../Reportes/TablaSimbolos";
 
 export class Environment{

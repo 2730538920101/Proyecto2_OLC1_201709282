@@ -1,6 +1,7 @@
 import { Retorno, Type } from "../Abstract/Retorno";
 import { Environment } from "../Symbol/Enviorment";
 import { Expression } from '../Abstract/Expresiones';
+import { MiError, TypeError } from '../Errores/Error';
 
 export enum LogicOption{
     AND,
@@ -28,6 +29,7 @@ export class Logic extends Expression{
         }else{
             return {value:null, type : Type.NULL};
         }
+        
     }
 
     public draw() : {rama : string, nodo: string}{

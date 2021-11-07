@@ -48,8 +48,8 @@ var Call = /** @class */ (function (_super) {
                     var newEnv = new Enviorment_1.Environment(environment.getGlobal());
                     if (start.parametros.length == this.expresiones.length) {
                         for (var i = 0; i < this.expresiones.length; i++) {
-                            var value = this.expresiones[i].execute(environment);
-                            var param = start.parametros[i].execute(environment);
+                            var value = this.expresiones[i].execute(newEnv);
+                            var param = start.parametros[i].execute(newEnv);
                             if (value.type == param.type) {
                                 newEnv.guardar(param.value, value.value, value.type);
                             }
